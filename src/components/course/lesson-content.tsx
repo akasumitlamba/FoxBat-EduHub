@@ -1,15 +1,16 @@
 "use client";
 
+import { useCallback, useState } from 'react';
 import type { Lesson } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, CheckCircle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
 import { CodePlayground } from './code-playground';
 import { Quiz } from './quiz';
 import { Separator } from '../ui/separator';
 import { getCourseById } from '@/lib/courses';
-import { useState } from 'react';
+
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -25,13 +26,13 @@ export function LessonContent({ lesson, courseId, onNext, onPrevious, isComplete
   const { isLessonCompletable, setLessonCompleted } = useCourseProgress(course!);
   const [quizPassed, setQuizPassed] = useState<boolean | null>(null);
 
-  const handleQuizSubmit = (score: number, total: number) => {
+  const handleQuizSubmit = useCallback((score: number, total: number) => {
     const passed = (score / total) * 100 >= 70;
     setQuizPassed(passed);
     if(passed) {
       setLessonCompleted(lesson.id, true);
     }
-  };
+  }, [lesson.id, setLessonCompleted]);
 
   const isCompletable = isLessonCompletable(lesson.id, quizPassed);
 
@@ -49,7 +50,7 @@ export function LessonContent({ lesson, courseId, onNext, onPrevious, isComplete
         <CardContent className="flex-1 prose dark:prose-invert max-w-none">
           {lesson.type === 'theory' && lesson.content && <div dangerouslySetInnerHTML={{ __html: lesson.content }} />}
           {lesson.type === 'code' && lesson.code && <CodePlayground initialCode={lesson.code} />}
-          {lesson.type === 'quiz' && lesson.quiz && <Quiz questions={lesson.quiz} onQuizSubmit={handleQuizSubmit} lessonId={lesson.id} />}
+          {lesson.type === 'quiz' && lesson.quiz && <Quiz key={lesson.id} questions={lesson.quiz} onQuizSubmit={handleQuizSubmit} />}
         </CardContent>
         <Separator className="my-4" />
         <CardFooter className="flex justify-between">

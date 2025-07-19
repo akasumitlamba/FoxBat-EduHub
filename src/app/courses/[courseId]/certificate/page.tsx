@@ -15,21 +15,18 @@ export default function CertificatePage() {
   const params = useParams();
   const courseId = params.courseId as string;
   const course = getCourseById(courseId);
-  const { isCourseCompleted } = useCourseProgress(course!);
+  const { isCourseCompleted, getCompletionDate } = useCourseProgress(course!);
   
   const [name, setName] = useState('');
   const [credentialId, setCredentialId] = useState('');
+  const [completionDate, setCompletionDate] = useState<Date | null>(null);
   const [isClient, setIsClient] = useState(false);
   
   const certificateRef = useRef<HTMLDivElement>(null);
 
-  const checkCourseCompletion = useCallback(() => {
-    return course && isCourseCompleted();
-  }, [course, isCourseCompleted]);
-
   useEffect(() => {
     setIsClient(true);
-    if(checkCourseCompletion()) {
+    if(course && isCourseCompleted()) {
       const storedName = localStorage.getItem(`certificate-name-${courseId}`) || '';
       setName(storedName);
       
@@ -39,8 +36,12 @@ export default function CertificatePage() {
         localStorage.setItem(`certificate-id-${courseId}`, storedId);
       }
       setCredentialId(storedId);
+
+      const date = getCompletionDate();
+      setCompletionDate(date);
+
     }
-  }, [courseId, checkCourseCompletion]);
+  }, [courseId, course, isCourseCompleted, getCompletionDate]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -103,7 +104,7 @@ export default function CertificatePage() {
 
         <div className="flex justify-between items-end text-xs text-muted-foreground mt-auto">
            <div>
-             <p>Date of Completion: {new Date().toLocaleDateString()}</p>
+             <p>Date of Completion: {completionDate ? completionDate.toLocaleDateString() : 'Calculating...'}</p>
            </div>
            <div>
             <p>Credential ID: {credentialId}</p>
