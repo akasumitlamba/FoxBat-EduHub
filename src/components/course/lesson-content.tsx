@@ -1,14 +1,16 @@
+
 "use client";
 
 import { useState, useCallback } from 'react';
 import type { Lesson } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Lock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Lock, Award } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { CodePlayground } from './code-playground';
 import { Quiz } from './quiz';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
+import Link from 'next/link';
 
 interface LessonContentProps {
   courseId: string;
@@ -18,21 +20,23 @@ interface LessonContentProps {
   hasPrevious: boolean;
   hasNext: boolean;
   isNextUnlocked: boolean;
+  isCourseCompleted: boolean;
 }
 
-export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPrevious, hasNext, isNextUnlocked }: LessonContentProps) {
-  const { isLessonCompleted, setLessonCompleted } = useCourseProgress(courseId);
+export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPrevious, hasNext, isNextUnlocked, isCourseCompleted }: LessonContentProps) {
+  const { isLessonCompleted, setLessonCompleted, setQuizScore } = useCourseProgress(courseId);
   const isCompleted = isLessonCompleted(lesson.id);
 
   const [quizPassed, setQuizPassed] = useState(isCompleted);
 
   const handleQuizSubmit = useCallback((score: number, total: number) => {
+    setQuizScore(lesson.id, { score, total });
     const passed = (score / total) >= 0.7;
     if (passed) {
       setQuizPassed(true);
       setLessonCompleted(lesson.id, true);
     }
-  }, [lesson.id, setLessonCompleted]);
+  }, [lesson.id, setLessonCompleted, setQuizScore]);
   
   const canProceed = lesson.type !== 'quiz' || quizPassed;
 
@@ -59,11 +63,20 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
             Previous
           </Button>
 
-          <Button onClick={onNext} disabled={!hasNext || !canProceed}>
-            {hasNext && !isNextUnlocked ? 'Next lesson is locked' : 'Next'}
-            {hasNext && isNextUnlocked && <ArrowRight className="ml-2 h-4 w-4" />}
-            {hasNext && !isNextUnlocked && <Lock className="ml-2 h-4 w-4" />}
-          </Button>
+          {isCourseCompleted && !hasNext ? (
+            <Button asChild>
+                <Link href={`/courses/${courseId}/certificate`}>
+                    <Award className="mr-2 h-4 w-4" />
+                    Get Your Certificate
+                </Link>
+            </Button>
+           ) : (
+            <Button onClick={onNext} disabled={!hasNext || !canProceed}>
+              {hasNext && !isNextUnlocked ? 'Next lesson is locked' : 'Next'}
+              {hasNext && isNextUnlocked && <ArrowRight className="ml-2 h-4 w-4" />}
+              {hasNext && !isNextUnlocked && <Lock className="ml-2 h-4 w-4" />}
+            </Button>
+           )}
         </CardFooter>
       </Card>
     </main>

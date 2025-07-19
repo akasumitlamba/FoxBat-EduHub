@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { getCourseById } from '@/lib/courses';
 import type { Course } from '@/lib/types';
@@ -15,11 +16,11 @@ export default function CertificatePage() {
   const params = useParams();
   const courseId = params.courseId as string;
   const course = getCourseById(courseId);
-  const { isCourseCompleted, getCompletionDate } = useCourseProgress(course!);
+  const { isCourseCompleted, getCompletionDate } = useCourseProgress(courseId);
   
   const [name, setName] = useState('');
   const [credentialId, setCredentialId] = useState('');
-  const [completionDate, setCompletionDate] = useState<Date | null>(null);
+  const [completionDate, setCompletionDate] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   
   const certificateRef = useRef<HTMLDivElement>(null);
@@ -38,7 +39,9 @@ export default function CertificatePage() {
       setCredentialId(storedId);
 
       const date = getCompletionDate();
-      setCompletionDate(date);
+      if (date) {
+        setCompletionDate(new Date(date).toLocaleDateString());
+      }
 
     }
   }, [courseId, course, isCourseCompleted, getCompletionDate]);
@@ -104,7 +107,7 @@ export default function CertificatePage() {
 
         <div className="flex justify-between items-end text-xs text-muted-foreground mt-auto">
            <div>
-             <p>Date of Completion: {completionDate ? completionDate.toLocaleDateString() : 'Calculating...'}</p>
+             <p>Date of Completion: {completionDate || 'Calculating...'}</p>
            </div>
            <div>
             <p>Credential ID: {credentialId}</p>

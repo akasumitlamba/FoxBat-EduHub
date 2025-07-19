@@ -6,13 +6,14 @@ import { getCourses } from '@/lib/courses';
 import type { Course } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ThemeSwitcher } from '@/components/theme-switcher';
+import { CourseManager } from '@/components/course/course-manager';
 
 function CourseCard({ course }: { course: Course }) {
   const lessonCount = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
   return (
     <Card className="flex flex-col">
-      <CardHeader>
+       <CardHeader className="relative">
         <Image
           src={course.bannerImage || `https://placehold.co/600x400.png`}
           alt={course.title}
@@ -21,6 +22,9 @@ function CourseCard({ course }: { course: Course }) {
           className="rounded-lg object-cover"
           data-ai-hint={course.bannerImage ? undefined : "online course abstract"}
         />
+        <div className="absolute top-4 right-4">
+            <CourseManager course={course} />
+        </div>
       </CardHeader>
       <CardContent className="flex-1">
         <CardTitle className="font-headline text-xl mb-2">{course.title}</CardTitle>

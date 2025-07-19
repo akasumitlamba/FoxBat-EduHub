@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -11,14 +12,15 @@ import { useCourseProgress } from '@/hooks/useCourseProgress';
 
 export function CoursePageClient({ course }: { course: Course }) {
   const allLessons = useMemo(() => course.modules.flatMap(m => m.lessons), [course]);
-  const { isLessonCompleted, setLessonCompleted, isInitialized, progress, isLessonUnlocked } = useCourseProgress(course.id);
+  const { isLessonCompleted, setLessonCompleted, isInitialized, progress, isLessonUnlocked, isCourseCompleted } = useCourseProgress(course.id);
 
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
 
   useEffect(() => {
     if (isInitialized && allLessons.length > 0) {
       const firstIncompleteLesson = allLessons.find(l => !isLessonCompleted(l.id));
-      setActiveLesson(firstIncompleteLesson || allLessons[0]);
+      const lastCompletedLesson = allLessons.slice().reverse().find(l => isLessonCompleted(l.id));
+      setActiveLesson(firstIncompleteLesson || lastCompletedLesson || allLessons[0]);
     }
   }, [isInitialized, allLessons, isLessonCompleted]);
 
@@ -75,6 +77,7 @@ export function CoursePageClient({ course }: { course: Course }) {
   }
   
   const nextLesson = getNextLesson();
+  const courseCompleted = isCourseCompleted();
 
   return (
     <SidebarProvider>
@@ -111,6 +114,7 @@ export function CoursePageClient({ course }: { course: Course }) {
               hasPrevious={!!getPreviousLesson()}
               hasNext={!!nextLesson}
               isNextUnlocked={nextLesson ? isLessonUnlocked(nextLesson.id) : true}
+              isCourseCompleted={courseCompleted}
             />
           </SidebarInset>
         </div>

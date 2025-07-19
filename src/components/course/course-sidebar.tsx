@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Course, Lesson, Module } from '@/lib/types';
@@ -67,10 +68,7 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonC
                             ) : (
                               <Lock className="h-4 w-4 text-muted-foreground" />
                             )}
-                            <span className={cn(
-                              'flex-1',
-                              isCompleted && 'line-through text-muted-foreground'
-                            )}>{lesson.title}</span>
+                            <span className={cn('flex-1')}>{lesson.title}</span>
                             {getIconForLesson(lesson.type)}
                           </button>
                         </li>
