@@ -5,7 +5,7 @@ import { useState, useCallback } from 'react';
 import type { Lesson } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Lock, Award } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Award } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { CodePlayground } from './code-playground';
 import { Quiz } from './quiz';

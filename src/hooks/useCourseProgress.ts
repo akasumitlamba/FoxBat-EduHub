@@ -84,6 +84,7 @@ export const useCourseProgress = (courseId: string) => {
     const newProgress = { completedLessons: [], quizScores: {} };
     setProgressStore(newProgress);
     saveProgressStore(courseId, newProgress);
+    window.location.reload();
   }, [courseId]);
 
   const isLessonCompleted = useCallback((lessonId: string) => {
@@ -100,9 +101,9 @@ export const useCourseProgress = (courseId: string) => {
   }, [allLessons, isLessonCompleted]);
 
   const isCourseCompleted = useCallback(() => {
-    if (allLessons.length === 0) return false;
+    if (!isInitialized || allLessons.length === 0) return false;
     return allLessons.every(l => completedLessons.includes(l.id));
-  }, [allLessons, completedLessons]);
+  }, [allLessons, completedLessons, isInitialized]);
 
   const getCompletionDate = useCallback(() => {
     return progressStore.completionDate || null;

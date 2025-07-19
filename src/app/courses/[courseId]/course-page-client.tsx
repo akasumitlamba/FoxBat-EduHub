@@ -102,6 +102,7 @@ export function CoursePageClient({ course }: { course: Course }) {
               setActiveLesson={handleSetActiveLesson}
               isLessonCompleted={isLessonCompleted}
               isLessonUnlocked={isLessonUnlocked}
+              progressPercentage={progress.percentage}
             />
           </Sidebar>
           <SidebarInset>
