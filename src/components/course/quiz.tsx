@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import type { QuizQuestion } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -9,9 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCourseProgress } from '@/hooks/useCourseProgress';
-import { getCourseById } from '@/lib/courses';
-import { useRouter } from 'next/navigation';
 
 interface QuizProps {
   questions: QuizQuestion[];
@@ -22,13 +19,15 @@ interface QuizProps {
 export function Quiz({ questions, onQuizSubmit, lessonId }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
-  
-  // This is a bit of a hack to get the courseId
-  const courseId = useRouter; 
 
   const score = questions.reduce((acc, q) => {
     return answers[q.id] === q.correctAnswer ? acc + 1 : acc;
   }, 0);
+
+  const handleAnswerChange = useCallback((questionId: string, value: string) => {
+    if (submitted) return;
+    setAnswers(prev => ({ ...prev, [questionId]: value }));
+  }, [submitted]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,17 +90,12 @@ export function Quiz({ questions, onQuizSubmit, lessonId }: QuizProps) {
             Submit Quiz
           </Button>
         )}
-        {submitted && (
-          <Button onClick={handleRetake}>
+        {submitted && (score / questions.length) < 0.7 && (
+          <Button onClick={handleRetake} type="button">
             Retake Quiz
           </Button>
         )}
       </form>
     </div>
   );
-
-  function handleAnswerChange(questionId: string, value: string) {
-    if (submitted) return;
-    setAnswers(prev => ({ ...prev, [questionId]: value }));
-  }
 }
