@@ -13,7 +13,9 @@ const getProgressStore = (courseId: string): CourseProgress => {
   }
   try {
     const progress = localStorage.getItem(`kalixa-progress-${courseId}`);
-    return progress ? JSON.parse(progress) : { completedLessons: [] };
+    // Ensure we always return an object with completedLessons as an array
+    const parsed = progress ? JSON.parse(progress) : {};
+    return { completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [] };
   } catch (error) {
     console.error("Failed to parse progress from localStorage", error);
     return { completedLessons: [] };
@@ -37,7 +39,7 @@ export const useCourseProgress = (course: Course) => {
   useEffect(() => {
     if (course) {
       const storedProgress = getProgressStore(course.id);
-      setCompletedLessons(storedProgress.completedLessons);
+      setCompletedLessons(storedProgress.completedLessons || []);
       setIsInitialized(true);
     }
   }, [course]);
@@ -49,9 +51,9 @@ export const useCourseProgress = (course: Course) => {
 
     let newCompletedLessons: string[];
     if (isCompleted) {
-      newCompletedLessons = [...new Set([...completedLessons, lessonId])];
+      newCompletedLessons = [...new Set([...(completedLessons || []), lessonId])];
     } else {
-      newCompletedLessons = completedLessons.filter(id => id !== lessonId);
+      newCompletedLessons = (completedLessons || []).filter(id => id !== lessonId);
     }
     
     setCompletedLessons(newCompletedLessons);
@@ -59,7 +61,7 @@ export const useCourseProgress = (course: Course) => {
   }, [completedLessons, course, isInitialized]);
 
   const isLessonCompleted = useCallback((lessonId: string) => {
-    return completedLessons.includes(lessonId);
+    return (completedLessons || []).includes(lessonId);
   }, [completedLessons]);
 
   const isModuleCompleted = useCallback((moduleId: string) => {
@@ -107,7 +109,7 @@ export const useCourseProgress = (course: Course) => {
       return { count: 0, total: 0, percentage: 0 };
     }
     const total = allLessons.length;
-    const count = completedLessons.length;
+    const count = (completedLessons || []).length;
     const percentage = total > 0 ? (count / total) * 100 : 0;
     return { count, total, percentage };
   }, [isInitialized, allLessons, completedLessons]);
