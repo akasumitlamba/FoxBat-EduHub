@@ -49,8 +49,8 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonC
                       const isUnlocked = isLessonUnlocked(lesson.id);
                       const isCompleted = isLessonCompleted(lesson.id);
                       
-                      // A lesson is clickable if it's unlocked.
-                      const isClickable = isUnlocked;
+                      // A lesson is clickable if it's unlocked OR has been previously completed.
+                      const isClickable = isUnlocked || isCompleted;
 
                       return (
                         <li key={lesson.id}>
