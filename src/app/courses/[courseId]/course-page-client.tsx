@@ -26,7 +26,7 @@ export function CoursePageClient({ course }: { course: Course }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen flex-col">
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:h-16 sm:px-6">
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-md sm:h-16 sm:px-6">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="md:hidden" />
             <Link href="/" className="flex items-center gap-2 font-semibold">

@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { AICourseGenerator } from "@/components/dashboard/ai-course-generator";
 import { Terminal, Sparkles, BookOpen } from "lucide-react";
 import Link from 'next/link';
@@ -7,9 +8,24 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import { PasswordProtect } from '@/components/password-protect';
 
-export default function DashboardPage() {
+export default function DashboardPage({ searchParams }: { searchParams: { key: string } }) {
+  const accessKey = process.env.DASHBOARD_ACCESS_KEY;
+
+  if (!accessKey) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p>Dashboard access is not configured. Please set DASHBOARD_ACCESS_KEY in your environment variables.</p>
+      </div>
+    );
+  }
+
+  if (searchParams.key !== accessKey) {
+    return <PasswordProtect />;
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-10">
@@ -22,13 +38,13 @@ export default function DashboardPage() {
             <span className="font-headline font-bold">Kalixa</span>
           </Link>
           <Link
-            href="/courses/introduction-to-web-development"
+            href="/#courses"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Courses
           </Link>
           <Link
-            href="/dashboard"
+            href={`/dashboard?key=${accessKey}`}
             className="text-foreground transition-colors hover:text-foreground"
           >
             Dashboard
