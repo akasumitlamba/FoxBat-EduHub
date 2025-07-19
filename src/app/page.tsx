@@ -20,7 +20,7 @@ function CourseCard({ course }: { course: Course }) {
           width={600}
           height={400}
           className="rounded-lg object-cover"
-          data-ai-hint={course.id === 'introduction-to-web-development' ? 'web development' : 'online course abstract'}
+          data-ai-hint={course.id === 'html-fundamentals' ? 'html code abstract' : 'online course abstract'}
         />
         <div className="absolute top-4 right-4">
             <CourseManager course={course} />
@@ -32,9 +32,9 @@ function CourseCard({ course }: { course: Course }) {
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <p className="text-sm text-muted-foreground">{course.modules.length} Modules • {lessonCount} Lessons</p>
-        <Button asChild>
+        <Button asChild disabled={course.modules.length === 0}>
           <Link href={`/courses/${course.id}`}>
-            Start Course
+            {course.modules.length > 0 ? 'Start Course' : 'Coming Soon'}
           </Link>
         </Button>
       </CardFooter>
