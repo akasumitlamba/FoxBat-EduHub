@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getCourses } from '@/lib/courses';
+import type { Course } from '@/lib/types';
 
 interface CourseProgress {
   completedLessons: string[];
@@ -44,17 +45,27 @@ export const useCourseProgress = (courseId: string) => {
   }, [courseId]);
 
   const setLessonCompleted = useCallback((lessonId: string, isCompleted: boolean) => {
-    const newCompletedLessons = isCompleted
-      ? [...new Set([...completedLessons, lessonId])]
-      : completedLessons.filter(id => id !== lessonId);
-    
-    setCompletedLessons(newCompletedLessons);
-    saveProgressStore(courseId, { completedLessons: newCompletedLessons });
-  }, [courseId, completedLessons]);
+    setCompletedLessons(prev => {
+      const newCompletedLessons = isCompleted
+        ? [...new Set([...prev, lessonId])]
+        : prev.filter(id => id !== lessonId);
+      saveProgressStore(courseId, { completedLessons: newCompletedLessons });
+      return newCompletedLessons;
+    });
+  }, [courseId]);
 
   const isLessonCompleted = useCallback((lessonId: string) => {
     return completedLessons.includes(lessonId);
   }, [completedLessons]);
+  
+  const isLessonUnlocked = useCallback((lessonId: string) => {
+    const lessonIndex = allLessons.findIndex(l => l.id === lessonId);
+    if (lessonIndex === -1) return false;
+    if (lessonIndex === 0) return true; // First lesson is always unlocked
+    
+    const previousLesson = allLessons[lessonIndex - 1];
+    return isLessonCompleted(previousLesson.id);
+  }, [allLessons, isLessonCompleted]);
 
   const progress = useMemo(() => {
     if (!isInitialized || allLessons.length === 0) {
@@ -64,7 +75,7 @@ export const useCourseProgress = (courseId: string) => {
     const count = completedLessons.length;
     const percentage = total > 0 ? (count / total) * 100 : 0;
     return { count, total, percentage };
-  }, [isInitialized, allLessons, completedLessons]);
+  }, [isInitialized, allLessons.length, completedLessons.length]);
 
   return {
     isInitialized,
@@ -72,5 +83,6 @@ export const useCourseProgress = (courseId: string) => {
     completedLessons,
     setLessonCompleted,
     isLessonCompleted,
+    isLessonUnlocked,
   };
 };

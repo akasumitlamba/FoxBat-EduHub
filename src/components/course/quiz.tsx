@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { QuizQuestion } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -12,19 +12,20 @@ import { cn } from '@/lib/utils';
 
 interface QuizProps {
   questions: QuizQuestion[];
+  onQuizSubmit: (score: number, total: number) => void;
 }
 
-export function Quiz({ questions }: QuizProps) {
+export function Quiz({ questions, onQuizSubmit }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
-  const handleAnswerChange = (questionId: string, value: string) => {
+  const handleAnswerChange = useCallback((questionId: string, value: string) => {
     if (submitted) return;
     setAnswers(prev => ({ ...prev, [questionId]: value }));
-  };
+  }, [submitted]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (submitted) return;
 
@@ -34,13 +35,14 @@ export function Quiz({ questions }: QuizProps) {
     
     setScore(currentScore);
     setSubmitted(true);
-  };
+    onQuizSubmit(currentScore, questions.length);
+  }, [submitted, questions, answers, onQuizSubmit]);
   
-  const handleRetake = () => {
+  const handleRetake = useCallback(() => {
     setSubmitted(false);
     setAnswers({});
     setScore(0);
-  };
+  }, []);
 
   return (
     <div className="space-y-8 not-prose">
@@ -49,6 +51,7 @@ export function Quiz({ questions }: QuizProps) {
           <AlertTitle>Quiz Results</AlertTitle>
           <AlertDescription>
             You scored {score} out of {questions.length}. 
+            {(score / questions.length) < 0.7 && " Please retake the quiz to proceed."}
           </AlertDescription>
         </Alert>
       )}

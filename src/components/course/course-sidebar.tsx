@@ -3,7 +3,7 @@
 import type { Course, Lesson, Module } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Circle, Code, BookOpen, HelpCircle } from 'lucide-react';
+import { CheckCircle, Circle, Lock, Code, BookOpen, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
 import { Progress } from '@/components/ui/progress';
@@ -13,6 +13,7 @@ interface CourseSidebarProps {
   activeLesson: Lesson;
   setActiveLesson: (lesson: Lesson) => void;
   isLessonCompleted: (lessonId: string) => boolean;
+  isLessonUnlocked: (lessonId: string) => boolean;
 }
 
 const getIconForLesson = (type: Lesson['type']) => {
@@ -24,7 +25,7 @@ const getIconForLesson = (type: Lesson['type']) => {
   }
 };
 
-export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonCompleted }: CourseSidebarProps) {
+export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonCompleted, isLessonUnlocked }: CourseSidebarProps) {
   const { progress, isInitialized } = useCourseProgress(course.id);
 
   return (
@@ -43,28 +44,38 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonC
                 </AccordionTrigger>
                 <AccordionContent>
                   <ul className="space-y-1">
-                    {module.lessons.map((lesson: Lesson) => (
-                      <li key={lesson.id}>
-                        <button
-                          onClick={() => setActiveLesson(lesson)}
-                          className={cn(
-                            'flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors',
-                            activeLesson.id === lesson.id
-                              ? 'bg-accent text-accent-foreground'
-                              : 'hover:bg-muted/50',
-                            isLessonCompleted(lesson.id) ? 'text-muted-foreground' : 'text-foreground'
-                          )}
-                        >
-                          {isLessonCompleted(lesson.id) ? (
-                            <CheckCircle className="h-4 w-4 text-primary" />
-                          ) : (
-                            <Circle className="h-4 w-4" />
-                          )}
-                          <span className="flex-1">{lesson.title}</span>
-                          {getIconForLesson(lesson.type)}
-                        </button>
-                      </li>
-                    ))}
+                    {module.lessons.map((lesson: Lesson) => {
+                      const isUnlocked = isLessonUnlocked(lesson.id);
+                      const isCompleted = isLessonCompleted(lesson.id);
+                      return (
+                        <li key={lesson.id}>
+                          <button
+                            onClick={() => setActiveLesson(lesson)}
+                            disabled={!isUnlocked}
+                            className={cn(
+                              'flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors',
+                              activeLesson.id === lesson.id
+                                ? 'bg-accent text-accent-foreground'
+                                : 'hover:bg-muted/50',
+                              !isUnlocked && 'cursor-not-allowed opacity-50'
+                            )}
+                          >
+                            {isCompleted ? (
+                              <CheckCircle className="h-4 w-4 text-primary" />
+                            ) : isUnlocked ? (
+                              <Circle className="h-4 w-4" />
+                            ) : (
+                              <Lock className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <span className={cn(
+                              'flex-1',
+                              isCompleted && 'line-through text-muted-foreground'
+                            )}>{lesson.title}</span>
+                            {getIconForLesson(lesson.type)}
+                          </button>
+                        </li>
+                      )
+                    })}
                   </ul>
                 </AccordionContent>
               </AccordionItem>

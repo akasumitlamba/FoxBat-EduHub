@@ -11,25 +11,26 @@ import { useCourseProgress } from '@/hooks/useCourseProgress';
 
 export function CoursePageClient({ course }: { course: Course }) {
   const allLessons = useMemo(() => course.modules.flatMap(m => m.lessons), [course]);
-  const { isLessonCompleted, setLessonCompleted, isInitialized, progress } = useCourseProgress(course.id);
+  const { isLessonCompleted, setLessonCompleted, isInitialized, progress, isLessonUnlocked } = useCourseProgress(course.id);
 
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
 
   useEffect(() => {
     if (isInitialized && allLessons.length > 0) {
-      // Find the first incomplete lesson to start on, or default to the very first lesson.
       const firstIncompleteLesson = allLessons.find(l => !isLessonCompleted(l.id));
       setActiveLesson(firstIncompleteLesson || allLessons[0]);
     }
   }, [isInitialized, allLessons, isLessonCompleted]);
 
-  const handleSetLessonCompleted = (lessonId: string, completed: boolean) => {
+  const handleSetLessonCompleted = useCallback((lessonId: string, completed: boolean) => {
     setLessonCompleted(lessonId, completed);
-  };
+  }, [setLessonCompleted]);
 
-  const handleSetActiveLesson = (lesson: Lesson) => {
-    setActiveLesson(lesson);
-  };
+  const handleSetActiveLesson = useCallback((lesson: Lesson) => {
+    if (isLessonUnlocked(lesson.id)) {
+      setActiveLesson(lesson);
+    }
+  }, [isLessonUnlocked]);
 
   const getNextLesson = useCallback(() => {
     if (!activeLesson) return null;
@@ -49,20 +50,21 @@ export function CoursePageClient({ course }: { course: Course }) {
     return null;
   }, [activeLesson, allLessons]);
 
-  const handleNext = () => {
-    setLessonCompleted(activeLesson!.id, true);
+  const handleNext = useCallback(() => {
+    if (!activeLesson) return;
+    handleSetLessonCompleted(activeLesson.id, true);
     const nextLesson = getNextLesson();
     if (nextLesson) {
       setActiveLesson(nextLesson);
     }
-  };
+  }, [activeLesson, getNextLesson, handleSetLessonCompleted]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     const previousLesson = getPreviousLesson();
     if (previousLesson) {
       setActiveLesson(previousLesson);
     }
-  };
+  }, [getPreviousLesson]);
   
   if (!isInitialized || !activeLesson) {
     return (
@@ -71,6 +73,8 @@ export function CoursePageClient({ course }: { course: Course }) {
       </div>
     );
   }
+  
+  const nextLesson = getNextLesson();
 
   return (
     <SidebarProvider>
@@ -94,18 +98,19 @@ export function CoursePageClient({ course }: { course: Course }) {
               activeLesson={activeLesson} 
               setActiveLesson={handleSetActiveLesson}
               isLessonCompleted={isLessonCompleted}
+              isLessonUnlocked={isLessonUnlocked}
             />
           </Sidebar>
           <SidebarInset>
             <LessonContent 
               key={activeLesson.id} 
+              courseId={course.id}
               lesson={activeLesson}
               onNext={handleNext}
               onPrevious={handlePrevious}
-              onToggleComplete={handleSetLessonCompleted}
-              isCompleted={isLessonCompleted(activeLesson.id)}
               hasPrevious={!!getPreviousLesson()}
-              hasNext={!!getNextLesson()}
+              hasNext={!!nextLesson}
+              isNextUnlocked={nextLesson ? isLessonUnlocked(nextLesson.id) : true}
             />
           </SidebarInset>
         </div>
