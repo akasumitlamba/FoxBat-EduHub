@@ -27,14 +27,14 @@ const getIconForLesson = (type: Lesson['type']) => {
 };
 
 export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonCompleted, isLessonUnlocked }: CourseSidebarProps) {
-  const { progress, isInitialized } = useCourseProgress(course.id);
+  const { progress } = useCourseProgress(course.id);
 
   return (
     <div className="flex h-full flex-col">
       <div className="p-4">
         <h2 className="text-lg font-semibold font-headline">{course.title}</h2>
-        <Progress value={isInitialized ? progress.percentage : 0} className="mt-2 h-2" />
-        <p className="text-xs text-muted-foreground mt-1">{isInitialized ? Math.round(progress.percentage) : 0}% complete</p>
+        <Progress value={progress.percentage} className="mt-2 h-2" />
+        <p className="text-xs text-muted-foreground mt-1">{Math.round(progress.percentage)}% complete</p>
       </div>
       <ScrollArea className="flex-1">
         <Accordion type="multiple" defaultValue={course.modules.map(m => m.id)} className="w-full px-4">
@@ -48,17 +48,21 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonC
                     {module.lessons.map((lesson: Lesson) => {
                       const isUnlocked = isLessonUnlocked(lesson.id);
                       const isCompleted = isLessonCompleted(lesson.id);
+                      
+                      // A lesson is clickable if it's unlocked.
+                      const isClickable = isUnlocked;
+
                       return (
                         <li key={lesson.id}>
                           <button
                             onClick={() => setActiveLesson(lesson)}
-                            disabled={!isUnlocked}
+                            disabled={!isClickable}
                             className={cn(
                               'flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors',
                               activeLesson.id === lesson.id
                                 ? 'bg-accent text-accent-foreground'
                                 : 'hover:bg-muted/50',
-                              !isUnlocked && 'cursor-not-allowed opacity-50'
+                              !isClickable && 'cursor-not-allowed opacity-50'
                             )}
                           >
                             {isCompleted ? (
