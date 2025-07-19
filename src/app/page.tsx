@@ -20,7 +20,7 @@ function CourseCard({ course }: { course: Course }) {
           width={600}
           height={400}
           className="rounded-lg object-cover"
-          data-ai-hint={course.bannerImage ? undefined : "online course abstract"}
+          data-ai-hint={course.id === 'introduction-to-web-development' ? 'web development' : 'online course abstract'}
         />
         <div className="absolute top-4 right-4">
             <CourseManager course={course} />

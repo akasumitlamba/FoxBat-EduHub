@@ -132,9 +132,32 @@ export const initialCourses: Course[] = [
   },
 ];
 
+let courses: Course[] | null = null;
+
 export const getCourses = (): Course[] => {
-  return initialCourses;
+  if (typeof window === 'undefined') {
+    return initialCourses;
+  }
+  if (courses) {
+    return courses;
+  }
+  try {
+    const storedCourses = localStorage.getItem('kalixa-courses');
+    courses = storedCourses ? JSON.parse(storedCourses) : initialCourses;
+  } catch (e) {
+    console.error('Failed to parse courses from localStorage', e);
+    courses = initialCourses;
+  }
+  return courses!;
 };
+
+export const saveCourses = (newCourses: Course[]) => {
+  courses = newCourses;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('kalixa-courses', JSON.stringify(courses));
+  }
+};
+
 
 export const getCourseById = (id: string): Course | undefined => {
   return getCourses().find(course => course.id === id);
