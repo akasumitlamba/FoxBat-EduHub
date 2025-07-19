@@ -1,41 +1,26 @@
 "use client";
 
-import { useCallback, useState } from 'react';
 import type { Lesson } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
-import { useCourseProgress } from '@/hooks/useCourseProgress';
+import { ArrowLeft, ArrowRight, Check, RefreshCw } from 'lucide-react';
+import { Separator } from '../ui/separator';
 import { CodePlayground } from './code-playground';
 import { Quiz } from './quiz';
-import { Separator } from '../ui/separator';
-import { getCourseById } from '@/lib/courses';
-
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface LessonContentProps {
   lesson: Lesson;
-  courseId: string;
   onNext: () => void;
   onPrevious: () => void;
+  onToggleComplete: (lessonId: string, completed: boolean) => void;
   isCompleted: boolean;
-  isLastLesson: boolean;
+  hasPrevious: boolean;
+  hasNext: boolean;
 }
 
-export function LessonContent({ lesson, courseId, onNext, onPrevious, isCompleted, isLastLesson }: LessonContentProps) {
-  const course = getCourseById(courseId);
-  const { isLessonCompletable, setLessonCompleted } = useCourseProgress(course!);
-  const [quizPassed, setQuizPassed] = useState<boolean | null>(null);
-
-  const handleQuizSubmit = useCallback((score: number, total: number) => {
-    const passed = (score / total) * 100 >= 70;
-    setQuizPassed(passed);
-    if(passed) {
-      setLessonCompleted(lesson.id, true);
-    }
-  }, [lesson.id, setLessonCompleted]);
-
-  const isCompletable = isLessonCompletable(lesson.id, quizPassed);
-
+export function LessonContent({ lesson, onNext, onPrevious, onToggleComplete, isCompleted, hasPrevious, hasNext }: LessonContentProps) {
   return (
     <main className="flex-1 p-4 sm:p-6 md:p-8">
       <Card className="min-h-full flex flex-col">
@@ -44,33 +29,34 @@ export function LessonContent({ lesson, courseId, onNext, onPrevious, isComplete
           <CardDescription>
             {lesson.type === 'theory' && 'Read through the material below.'}
             {lesson.type === 'code' && 'Experiment with the code in the playground.'}
-            {lesson.type === 'quiz' && 'Test your knowledge with this quiz. You need to score at least 70% to pass.'}
+            {lesson.type === 'quiz' && 'Test your knowledge with this quiz.'}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 prose dark:prose-invert max-w-none">
           {lesson.type === 'theory' && lesson.content && <div dangerouslySetInnerHTML={{ __html: lesson.content }} />}
           {lesson.type === 'code' && lesson.code && <CodePlayground initialCode={lesson.code} />}
-          {lesson.type === 'quiz' && lesson.quiz && <Quiz key={lesson.id} questions={lesson.quiz} onQuizSubmit={handleQuizSubmit} />}
+          {lesson.type === 'quiz' && lesson.quiz && <Quiz key={lesson.id} questions={lesson.quiz} />}
         </CardContent>
         <Separator className="my-4" />
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={onPrevious}>
+        <CardFooter className="flex flex-col sm:flex-row items-center gap-4 justify-between">
+          <Button variant="outline" onClick={onPrevious} disabled={!hasPrevious}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
 
-          {isLastLesson && isCompleted ? (
-             <Button onClick={onNext} variant="default" className="bg-green-600 hover:bg-green-700">
-               <CheckCircle className="mr-2 h-4 w-4" />
-               Finish Course
-             </Button>
-          ) : (
-            <Button onClick={onNext} disabled={!isCompletable}>
-              {isCompleted ? 'Next Lesson' : 'Complete and Continue'}
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          )}
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id={`complete-${lesson.id}`} 
+              checked={isCompleted}
+              onCheckedChange={(checked) => onToggleComplete(lesson.id, checked)}
+            />
+            <Label htmlFor={`complete-${lesson.id}`}>{isCompleted ? 'Completed' : 'Mark as Complete'}</Label>
+          </div>
 
+          <Button onClick={onNext} disabled={!hasNext}>
+            Next
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </CardFooter>
       </Card>
     </main>

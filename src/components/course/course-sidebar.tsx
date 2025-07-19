@@ -3,7 +3,7 @@
 import type { Course, Lesson, Module } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Circle, Code, BookOpen, HelpCircle, Lock } from 'lucide-react';
+import { CheckCircle, Circle, Code, BookOpen, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
 import { Progress } from '@/components/ui/progress';
@@ -12,6 +12,7 @@ interface CourseSidebarProps {
   course: Course;
   activeLesson: Lesson;
   setActiveLesson: (lesson: Lesson) => void;
+  isLessonCompleted: (lessonId: string) => boolean;
 }
 
 const getIconForLesson = (type: Lesson['type']) => {
@@ -23,8 +24,8 @@ const getIconForLesson = (type: Lesson['type']) => {
   }
 };
 
-export function CourseSidebar({ course, activeLesson, setActiveLesson }: CourseSidebarProps) {
-  const { progress, isLessonCompleted, isModuleCompleted, isInitialized } = useCourseProgress(course);
+export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonCompleted }: CourseSidebarProps) {
+  const { progress, isInitialized } = useCourseProgress(course.id);
 
   return (
     <div className="flex h-full flex-col">
@@ -35,15 +36,10 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson }: CourseS
       </div>
       <ScrollArea className="flex-1">
         <Accordion type="multiple" defaultValue={course.modules.map(m => m.id)} className="w-full px-4">
-          {course.modules.map((module: Module, moduleIndex) => {
-            const isLocked = moduleIndex > 0 && !isModuleCompleted(course.modules[moduleIndex - 1].id);
-            return (
+          {course.modules.map((module: Module) => (
               <AccordionItem value={module.id} key={module.id}>
-                <AccordionTrigger className={cn("font-semibold text-left", isLocked && "text-muted-foreground cursor-not-allowed")}>
-                  <div className="flex items-center gap-2">
-                    {isLocked && <Lock className="h-4 w-4" />}
+                <AccordionTrigger className="font-semibold text-left">
                     {module.title}
-                  </div>
                 </AccordionTrigger>
                 <AccordionContent>
                   <ul className="space-y-1">
@@ -51,14 +47,12 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson }: CourseS
                       <li key={lesson.id}>
                         <button
                           onClick={() => setActiveLesson(lesson)}
-                          disabled={isLocked}
                           className={cn(
                             'flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors',
                             activeLesson.id === lesson.id
                               ? 'bg-accent text-accent-foreground'
                               : 'hover:bg-muted/50',
-                            isLessonCompleted(lesson.id) ? 'text-muted-foreground' : 'text-foreground',
-                            isLocked && 'cursor-not-allowed text-muted-foreground/50 hover:bg-transparent'
+                            isLessonCompleted(lesson.id) ? 'text-muted-foreground' : 'text-foreground'
                           )}
                         >
                           {isLessonCompleted(lesson.id) ? (
@@ -74,8 +68,7 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson }: CourseS
                   </ul>
                 </AccordionContent>
               </AccordionItem>
-            )
-          })}
+          ))}
         </Accordion>
       </ScrollArea>
     </div>

@@ -49,12 +49,6 @@ export default function Home() {
           <span className="ml-2 font-headline text-lg font-bold">Kalixa</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
-          <Link href="#courses" className="text-sm font-medium hover:underline underline-offset-4">
-            Courses
-          </Link>
-          <Link href="/dashboard" className="text-sm font-medium hover:underline underline-offset-4">
-            Dashboard
-          </Link>
           <ThemeSwitcher />
         </nav>
       </header>

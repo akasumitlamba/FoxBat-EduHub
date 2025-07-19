@@ -4,62 +4,73 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import type { Course, Lesson } from '@/lib/types';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { Terminal, Award } from 'lucide-react';
+import { Terminal } from 'lucide-react';
 import { CourseSidebar } from '@/components/course/course-sidebar';
 import { LessonContent } from '@/components/course/lesson-content';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
-import { Button } from '@/components/ui/button';
 
 export function CoursePageClient({ course }: { course: Course }) {
   const allLessons = useMemo(() => course.modules.flatMap(m => m.lessons), [course]);
-  const { progress, isLessonCompleted, isModuleCompleted, setLessonCompleted, isCourseCompleted, isInitialized, getNextLesson, getPreviousLesson } = useCourseProgress(course);
+  const { isLessonCompleted, setLessonCompleted, isInitialized, progress } = useCourseProgress(course.id);
 
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
 
   useEffect(() => {
-    if (isInitialized) {
+    if (isInitialized && allLessons.length > 0) {
+      // Find the first incomplete lesson to start on, or default to the very first lesson.
       const firstIncompleteLesson = allLessons.find(l => !isLessonCompleted(l.id));
-      setActiveLesson(firstIncompleteLesson || allLessons[allLessons.length - 1]);
+      setActiveLesson(firstIncompleteLesson || allLessons[0]);
     }
   }, [isInitialized, allLessons, isLessonCompleted]);
 
-  const handleSetActiveLesson = useCallback((lesson: Lesson) => {
-      const moduleIndex = course.modules.findIndex(m => m.lessons.some(l => l.id === lesson.id));
-      const isLocked = moduleIndex > 0 && !isModuleCompleted(course.modules[moduleIndex - 1].id);
-      
-      if (!isLocked) {
-          setActiveLesson(lesson);
-      }
-  }, [course.modules, isModuleCompleted]);
+  const handleSetLessonCompleted = (lessonId: string, completed: boolean) => {
+    setLessonCompleted(lessonId, completed);
+  };
 
-  const handleNext = useCallback(() => {
-    if (!activeLesson) return;
-    setLessonCompleted(activeLesson.id, true);
-    const nextLesson = getNextLesson(activeLesson.id);
+  const handleSetActiveLesson = (lesson: Lesson) => {
+    setActiveLesson(lesson);
+  };
+
+  const getNextLesson = useCallback(() => {
+    if (!activeLesson) return null;
+    const currentIndex = allLessons.findIndex(l => l.id === activeLesson.id);
+    if (currentIndex > -1 && currentIndex < allLessons.length - 1) {
+      return allLessons[currentIndex + 1];
+    }
+    return null;
+  }, [activeLesson, allLessons]);
+
+  const getPreviousLesson = useCallback(() => {
+    if (!activeLesson) return null;
+    const currentIndex = allLessons.findIndex(l => l.id === activeLesson.id);
+    if (currentIndex > 0) {
+      return allLessons[currentIndex - 1];
+    }
+    return null;
+  }, [activeLesson, allLessons]);
+
+  const handleNext = () => {
+    setLessonCompleted(activeLesson!.id, true);
+    const nextLesson = getNextLesson();
     if (nextLesson) {
       setActiveLesson(nextLesson);
     }
-  }, [activeLesson, setLessonCompleted, getNextLesson]);
+  };
 
-  const handlePrevious = useCallback(() => {
-      if (!activeLesson) return;
-      const prevLesson = getPreviousLesson(activeLesson.id);
-      if (prevLesson) {
-          setActiveLesson(prevLesson);
-      }
-  }, [activeLesson, getPreviousLesson]);
+  const handlePrevious = () => {
+    const previousLesson = getPreviousLesson();
+    if (previousLesson) {
+      setActiveLesson(previousLesson);
+    }
+  };
   
-  if (!activeLesson) {
-      return (
-          <div className="flex items-center justify-center min-h-screen">
-              Loading course...
-          </div>
-      );
+  if (!isInitialized || !activeLesson) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading course...
+      </div>
+    );
   }
-
-  const isCompleted = isLessonCompleted(activeLesson.id);
-  const nextLesson = getNextLesson(activeLesson.id);
-  const isLastLesson = !nextLesson;
 
   return (
     <SidebarProvider>
@@ -72,17 +83,8 @@ export function CoursePageClient({ course }: { course: Course }) {
               <span className="font-headline text-lg font-bold">Kalixa</span>
             </Link>
           </div>
-          <div className="ml-auto flex items-center gap-4">
-             {isCourseCompleted() ? (
-              <Button asChild>
-                <Link href={`/courses/${course.id}/certificate`}>
-                  <Award className="mr-2 h-4 w-4" />
-                  View Certificate
-                </Link>
-              </Button>
-            ) : (
+           <div className="ml-auto flex items-center gap-4">
              <div className="text-sm text-muted-foreground">{Math.round(progress.percentage)}% complete</div>
-            )}
           </div>
         </header>
         <div className="flex flex-1">
@@ -90,18 +92,20 @@ export function CoursePageClient({ course }: { course: Course }) {
             <CourseSidebar 
               course={course} 
               activeLesson={activeLesson} 
-              setActiveLesson={handleSetActiveLesson} 
+              setActiveLesson={handleSetActiveLesson}
+              isLessonCompleted={isLessonCompleted}
             />
           </Sidebar>
           <SidebarInset>
             <LessonContent 
               key={activeLesson.id} 
-              lesson={activeLesson} 
-              courseId={course.id} 
+              lesson={activeLesson}
               onNext={handleNext}
               onPrevious={handlePrevious}
-              isCompleted={isCompleted}
-              isLastLesson={isLastLesson}
+              onToggleComplete={handleSetLessonCompleted}
+              isCompleted={isLessonCompleted(activeLesson.id)}
+              hasPrevious={!!getPreviousLesson()}
+              hasNext={!!getNextLesson()}
             />
           </SidebarInset>
         </div>

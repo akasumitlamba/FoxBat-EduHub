@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import type { QuizQuestion } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -12,20 +12,19 @@ import { cn } from '@/lib/utils';
 
 interface QuizProps {
   questions: QuizQuestion[];
-  onQuizSubmit: (score: number, total: number) => void;
 }
 
-export function Quiz({ questions, onQuizSubmit }: QuizProps) {
+export function Quiz({ questions }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
-  const handleAnswerChange = useCallback((questionId: string, value: string) => {
+  const handleAnswerChange = (questionId: string, value: string) => {
     if (submitted) return;
     setAnswers(prev => ({ ...prev, [questionId]: value }));
-  }, [submitted]);
+  };
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (submitted) return;
 
@@ -35,15 +34,13 @@ export function Quiz({ questions, onQuizSubmit }: QuizProps) {
     
     setScore(currentScore);
     setSubmitted(true);
-    onQuizSubmit(currentScore, questions.length);
-  }, [submitted, questions, answers, onQuizSubmit]);
+  };
   
-  const handleRetake = useCallback(() => {
+  const handleRetake = () => {
     setSubmitted(false);
     setAnswers({});
     setScore(0);
-    onQuizSubmit(0, questions.length);
-  }, [onQuizSubmit, questions.length]);
+  };
 
   return (
     <div className="space-y-8 not-prose">
@@ -51,7 +48,7 @@ export function Quiz({ questions, onQuizSubmit }: QuizProps) {
         <Alert variant={(score / questions.length) >= 0.7 ? "default" : "destructive"} className="bg-card">
           <AlertTitle>Quiz Results</AlertTitle>
           <AlertDescription>
-            You scored {score} out of {questions.length}. {(score / questions.length) >= 0.7 ? "Great job! You passed." : "You need to score at least 70% to pass. Please try again."}
+            You scored {score} out of {questions.length}. 
           </AlertDescription>
         </Alert>
       )}
@@ -95,8 +92,8 @@ export function Quiz({ questions, onQuizSubmit }: QuizProps) {
             Submit Quiz
           </Button>
         )}
-        {submitted && (score / questions.length) < 0.7 && (
-          <Button onClick={handleRetake} type="button">
+        {submitted && (
+          <Button onClick={handleRetake} type="button" variant="outline">
             Retake Quiz
           </Button>
         )}

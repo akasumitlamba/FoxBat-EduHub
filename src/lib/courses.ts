@@ -5,7 +5,7 @@ export const initialCourses: Course[] = [
     id: 'introduction-to-web-development',
     title: 'Introduction to Web Development',
     description: 'Learn the fundamentals of web development, including HTML, CSS, and JavaScript.',
-    bannerImage: 'https://placehold.co/600x400/30D5C8/333333.png',
+    bannerImage: 'https://placehold.co/600x400.png',
     modules: [
       {
         id: 'module-1-html',
@@ -133,38 +133,9 @@ export const initialCourses: Course[] = [
 ];
 
 export const getCourses = (): Course[] => {
-  if (typeof window === 'undefined') {
-    return initialCourses;
-  }
-  try {
-    const savedCourses = localStorage.getItem('kalixa-courses');
-    if (savedCourses) {
-      const parsed = JSON.parse(savedCourses);
-      // Simple validation to ensure we have an array of courses
-      if(Array.isArray(parsed) && parsed.every(c => c.id && c.title)) {
-        return parsed;
-      }
-    }
-  } catch (error) {
-    console.error("Failed to parse courses from localStorage", error);
-    // If parsing fails, fall back to initial courses
-    return initialCourses;
-  }
-  // If no saved courses, save the initial ones to local storage
-  saveCourses(initialCourses);
   return initialCourses;
 };
 
 export const getCourseById = (id: string): Course | undefined => {
   return getCourses().find(course => course.id === id);
-};
-
-export const saveCourses = (coursesToSave: Course[]) => {
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem('kalixa-courses', JSON.stringify(coursesToSave));
-    } catch (error) {
-      console.error("Failed to save courses to localStorage", error);
-    }
-  }
 };
