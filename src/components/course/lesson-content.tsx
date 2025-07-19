@@ -35,6 +35,8 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
     if (passed) {
       setQuizPassed(true);
       setLessonCompleted(lesson.id, true);
+    } else {
+      setQuizPassed(false);
     }
   }, [lesson.id, setLessonCompleted, setQuizScore]);
   
@@ -72,9 +74,8 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
             </Button>
            ) : (
             <Button onClick={onNext} disabled={!hasNext || !canProceed}>
-              {hasNext && !isNextUnlocked ? 'Next lesson is locked' : 'Next'}
-              {hasNext && isNextUnlocked && <ArrowRight className="ml-2 h-4 w-4" />}
-              {hasNext && !isNextUnlocked && <Lock className="ml-2 h-4 w-4" />}
+              Next
+              {isNextUnlocked ? <ArrowRight className="ml-2 h-4 w-4" /> : <Lock className="ml-2 h-4 w-4" />}
             </Button>
            )}
         </CardFooter>

@@ -9,7 +9,7 @@ export const initialCourses: Course[] = [
     modules: [
       {
         id: 'module-1-basics',
-        title: 'Module 1: HTML Basics',
+        title: 'Module 1: Getting Started with HTML',
         lessons: [
           {
             id: 'html-intro',
@@ -20,34 +20,44 @@ export const initialCourses: Course[] = [
               <p>HTML (HyperText Markup Language) is the standard language for creating web pages. It provides the structure for content on the internet.</p>
               <p>In this course, we'll use a simple mnemonic to remember the core technologies of the web:</p>
               <ul>
-                <li><strong style="color: #A78BFA;">PURPLE - CSS</strong> (For styling)</li>
-                <li><strong style="color: #30D5C8;">DINO - HTML</strong> (For structure)</li>
-                <li><strong style="color: #FBBF24;">DANCED - JS</strong> (For interactivity)</li>
+                <li><strong>PURPLE - CSS</strong> (For styling)</li>
+                <li><strong>DINO - HTML</strong> (For structure)</li>
+                <li><strong>DANCED - JS</strong> (For interactivity)</li>
               </ul>
               <p>Let's dive into the DINO and learn about HTML tags!</p>
             `,
           },
           {
-            id: 'basic-tags',
-            slug: 'basic-tags',
-            title: 'Basic Content Tags',
+            id: 'p-tag',
+            slug: 'p-tag',
+            title: 'Paragraph Tag',
+            type: 'theory',
+            content: `
+              <h3>Paragraph Tag (&lt;p&gt;)</h3>
+              <p>The <code>&lt;p&gt;</code> tag defines a paragraph. It's one of the most common tags you'll use. Browsers automatically add some space (a margin) before and after each paragraph.</p>
+              <pre><code>&lt;p&gt;This is a paragraph.&lt;/p&gt;\n&lt;p&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+            `,
+          },
+          {
+            id: 'heading-tags',
+            slug: 'heading-tags',
+            title: 'Heading Tags',
+            type: 'theory',
+            content: `
+              <h3>Heading Tags (&lt;h1&gt; to &lt;h6&gt;)</h3>
+              <p>Heading tags are used to define headings for your sections. <code>&lt;h1&gt;</code> defines the most important heading, while <code>&lt;h6&gt;</code> defines the least important.</p>
+              <pre><code>&lt;h1&gt;This is Heading 1&lt;/h1&gt;\n&lt;h2&gt;This is Heading 2&lt;/h2&gt;\n&lt;h3&gt;This is Heading 3&lt;/h3&gt;</code></pre>
+            `,
+          },
+           {
+            id: 'bold-tag',
+            slug: 'bold-tag',
+            title: 'Bold Tag',
             type: 'theory',
             content: `
               <h3>Bold Tag (&lt;b&gt;)</h3>
-              <p>The <code>&lt;b&gt;</code> tag makes text bold but doesn't add any extra semantic importance to the text.</p>
-              <pre><code>&lt;p&gt;This is a &lt;b&gt;bold&lt;/b&gt; text.&lt;/p&gt;</code></pre>
-              
-              <h3>Paragraph Tag (&lt;p&gt;)</h3>
-              <p>The <code>&lt;p&gt;</code> tag defines a paragraph and automatically adds space before and after the text.</p>
-              <pre><code>&lt;p&gt;This is a paragraph.&lt;/p&gt;</code></pre>
-
-              <h3>Heading Tags (&lt;h1&gt; to &lt;h6&gt;)</h3>
-              <p>Heading tags create headings, with <code>&lt;h1&gt;</code> being the most important and <code>&lt;h6&gt;</code> the least.</p>
-              <pre><code>&lt;h1&gt;Heading 1&lt;/h1&gt;\n&lt;h2&gt;Heading 2&lt;/h2&gt;</code></pre>
-
-              <h3>Comments in HTML</h3>
-              <p>Comments are notes in your code that are not displayed in the browser. They start with <code>&lt;!--</code> and end with <code>--&gt;</code>.</p>
-              <pre><code>&lt;!-- This is a comment --&gt;</code></pre>
+              <p>The <code>&lt;b&gt;</code> tag specifies bold text without any extra importance. It's used for drawing attention to text stylistically.</p>
+              <pre><code>&lt;p&gt;This text is normal, but this is &lt;b&gt;bold&lt;/b&gt;.&lt;/p&gt;</code></pre>
             `,
           },
           {
@@ -106,43 +116,40 @@ export const initialCourses: Course[] = [
         ]
       },
       {
-        id: 'module-2-links-images',
-        title: 'Module 2: Linking & Media',
+        id: 'module-2-links-media',
+        title: 'Module 2: Links, Images, and Attributes',
         lessons: [
           {
-            id: 'links',
-            slug: 'links',
-            title: 'Creating Hyperlinks',
-            type: 'theory',
+            id: 'anchor-tag',
+            slug: 'anchor-tag',
+            title: 'The Anchor Tag',
+            type: 'code',
             content: `
               <h3>Anchor Tag (&lt;a&gt;)</h3>
               <p>The <code>&lt;a&gt;</code> tag creates hyperlinks. The <code>href</code> attribute is essential as it specifies the link's destination URL.</p>
               <p>To make a link open in a new browser tab, you can add the <code>target="_blank"</code> attribute.</p>
-              
-              <h4>Example (External Link):</h4>
-              <pre><code>&lt;a href="https://www.google.com" target="_blank"&gt;Go to Google&lt;/a&gt;</code></pre>
-              
-              <h4>Example (Internal File):</h4>
-              <pre><code>&lt;a href="/about.html"&gt;About Us&lt;/a&gt;</code></pre>
             `,
+            code: {
+              html: `<p>Visit our search engine of choice:</p>
+<a href="https://www.google.com" target="_blank">Go to Google</a>`
+            }
           },
           {
-            id: 'images',
-            slug: 'images',
-            title: 'Embedding Images',
+            id: 'img-tag',
+            slug: 'img-tag',
+            title: 'The Image Tag',
             type: 'code',
             content: `
               <h3>Image Tag (&lt;img&gt;)</h3>
               <p>The <code>&lt;img&gt;</code> tag embeds an image. It's a self-closing tag and requires two main attributes:</p>
               <ul>
                 <li><strong><code>src</code></strong>: Specifies the path or URL to the image.</li>
-                <li><strong><code>alt</code></strong>: Provides alternative text for screen readers and if the image fails to load.</li>
+                <li><strong><code>alt</code></strong>: Provides alternative text for screen readers and if the image fails to load. This is very important for accessibility!</li>
               </ul>
-              <p>You can also set the <code>width</code> and <code>height</code> attributes, but it's often better to do this with CSS.</p>
             `,
             code: {
               html: `<h1>My Favorite Animal</h1>
-<p>Here is a picture of a cat.</p>
+<p>Here is a placeholder picture of a cat.</p>
 <img 
   src="https://placehold.co/300x200.png" 
   alt="A placeholder image of a cute cat"
@@ -151,6 +158,37 @@ export const initialCourses: Course[] = [
 >`,
             },
           },
+          {
+            id: 'comments',
+            slug: 'comments',
+            title: 'HTML Comments',
+            type: 'theory',
+            content: `
+              <h3>Comments in HTML</h3>
+              <p>Comments are notes in your code that are not displayed in the browser. They start with <code>&lt;!--</code> and end with <code>--&gt;</code>. They are useful for explaining your code to yourself and others.</p>
+              <pre><code>&lt;!-- This is a comment, it won't show up! --&gt;\n&lt;p&gt;This paragraph, however, will be displayed.&lt;/p&gt;</code></pre>
+            `,
+          },
+          {
+            id: 'links-media-quiz',
+            slug: 'links-media-quiz',
+            title: 'Links & Media Quiz',
+            type: 'quiz',
+            quiz: [
+              {
+                id: 'q-links-1',
+                question: 'Which attribute specifies the destination of a link?',
+                options: ['src', 'link', 'href', 'dest'],
+                correctAnswer: 'href',
+              },
+               {
+                id: 'q-links-2',
+                question: 'What is the purpose of the `alt` attribute on an `<img>` tag?',
+                options: ['To add a caption', 'For accessibility and as a fallback', 'To set the image title', 'To link the image'],
+                correctAnswer: 'For accessibility and as a fallback',
+              }
+            ]
+          }
         ]
       },
       {
@@ -164,23 +202,20 @@ export const initialCourses: Course[] = [
             type: 'theory',
             content: `
               <p>HTML elements are categorized into two main types: block-level and inline.</p>
-              
               <h4>Block-Level Elements</h4>
-              <p>These elements start on a new line and take up the full width available. Think of them as building blocks that stack on top of each other.</p>
-              <ul><li>Examples: <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;-&lt;h6&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;table&gt;</code>.</li></ul>
-              <p>The <code>&lt;div&gt;</code> tag is a generic container used to group other elements for layout and styling.</p>
-
+              <p>These elements start on a new line and take up the full width available. Think of them as building blocks that stack on top of each other. Examples: <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;-&lt;h6&gt;</code>.</p>
               <h4>Inline Elements</h4>
-              <p>These elements do not start on a new line and only take up as much width as necessary. They flow within the text.</p>
-              <ul><li>Examples: <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;b&gt;</code>, <code>&lt;img&gt;</code>.</li></ul>
-              <p>The <code>&lt;span&gt;</code> tag is a generic inline container used to group text or other inline elements for styling.</p>
+              <p>These elements do not start on a new line and only take up as much width as necessary. They flow within the text. Examples: <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;b&gt;</code>, <code>&lt;img&gt;</code>.</p>
             `,
           },
           {
-            id: 'structure-playground',
-            slug: 'structure-playground',
+            id: 'div-span-playground',
+            slug: 'div-span-playground',
             title: 'Div and Span Practice',
             type: 'code',
+            content: `
+              <p>The <code>&lt;div&gt;</code> tag is a generic block-level container used to group other elements, often for layout and styling with CSS. The <code>&lt;span&gt;</code> tag is its inline equivalent, used to group and style parts of text without breaking the flow.</p>
+            `,
             code: {
               html: `<div class="container">
   <h2>A Title in a Div</h2>
@@ -189,7 +224,6 @@ export const initialCourses: Course[] = [
     Divs help structure the page, while spans target specific parts of content.
   </p>
 </div>
-
 <div class="container">
   <p>This is a second container.</p>
 </div>`,
@@ -203,7 +237,7 @@ export const initialCourses: Course[] = [
   border-radius: 8px;
 }
 .highlight {
-  color: #A78BFA;
+  color: #8B5CF6; /* a nice purple */
   font-weight: bold;
 }`,
             }
@@ -214,8 +248,7 @@ export const initialCourses: Course[] = [
             title: 'Semantic Markup',
             type: 'theory',
             content: `
-              <p>Semantic markup involves using HTML tags that convey the meaning and structure of the content, not just its presentation.</p>
-              <p>Using semantic tags helps search engines, screen readers, and other developers understand your website's structure.</p>
+              <p>Semantic markup involves using HTML tags that convey the meaning and structure of the content, not just its presentation. This helps search engines, screen readers, and other developers understand your website's structure.</p>
               <ul>
                 <li><code>&lt;header&gt;</code>: Introductory content for a page or section.</li>
                 <li><code>&lt;nav&gt;</code>: A set of navigation links.</li>
@@ -224,18 +257,6 @@ export const initialCourses: Course[] = [
                 <li><code>&lt;section&gt;</code>: A thematic grouping of content.</li>
                 <li><code>&lt;footer&gt;</code>: Footer content, like copyrights or contact info.</li>
               </ul>
-              <pre><code>&lt;header&gt;
-  &lt;h1&gt;My Website&lt;/h1&gt;
-&lt;/header&gt;
-&lt;main&gt;
-  &lt;article&gt;
-    &lt;h2&gt;Article Title&lt;/h2&gt;
-    &lt;p&gt;Content...&lt;/p&gt;
-  &lt;/article&gt;
-&lt;/main&gt;
-&lt;footer&gt;
-  &lt;p&gt;&copy; 2024 My Website&lt;/p&gt;
-&lt;/footer&gt;</code></pre>
             `,
           },
           {
@@ -244,14 +265,7 @@ export const initialCourses: Course[] = [
             title: 'Creating Tables',
             type: 'code',
             content: `
-              <p>Tables are used to display data in rows and columns.</p>
-              <ul>
-                <li><code>&lt;table&gt;</code>: The wrapper for the entire table.</li>
-                <li><code>&lt;tr&gt;</code>: Defines a table row.</li>
-                <li><code>&lt;td&gt;</code>: Defines a table data cell.</li>
-                <li><code>&lt;th&gt;</code>: Defines a table header cell.</li>
-                <li><code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;tfoot&gt;</code>: Group header, body, and footer content.</li>
-              </ul>
+              <p>Tables are used to display data in rows and columns. They are made up of several tags working together: <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> (row), <code>&lt;th&gt;</code> (header cell), and <code>&lt;td&gt;</code> (data cell).</p>
             `,
             code: {
               html: `<table>
@@ -329,7 +343,7 @@ thead {
             content: `
               <p>Forms are a key part of the interactive web, allowing users to send data to a server.</p>
               <ul>
-                <li><strong><code>&lt;form&gt;</code></strong>: The container for all form controls. The <code>action</code> attribute specifies where to send the form data.</li>
+                <li><strong><code>&lt;form&gt;</code></strong>: The container for all form controls.</li>
                 <li><strong><code>&lt;label&gt;</code></strong>: A caption for an input field. The <code>for</code> attribute links it to an input's <code>id</code>, improving accessibility.</li>
                 <li><strong><code>&lt;input&gt;</code></strong>: The most versatile form element. Its behavior is defined by its <code>type</code> attribute.</li>
               </ul>
@@ -341,7 +355,7 @@ thead {
             title: 'Your First Form',
             type: 'code',
             content: `
-              <p>Let's build a simple contact form. Notice how the <code>label</code>'s <code>for</code> attribute matches the <code>input</code>'s <code>id</code> attribute. This is best practice.</p>
+              <p>Let's build a simple contact form. Notice how the <code>label</code>'s <code>for</code> attribute matches the <code>input</code>'s <code>id</code> attribute. This is best practice for accessibility, allowing users to click the label to focus on the input field.</p>
             `,
             code: {
               html: `<form action="/submit-form">
@@ -357,7 +371,8 @@ thead {
   <input type="submit" value="Submit">
 </form>`,
               css: `label {
-  font-weight: bold;
+  display: block;
+  margin-top: 10px;
 }
 input[type="text"],
 input[type="email"],
@@ -369,7 +384,7 @@ input[type="password"] {
   border: 1px solid #ccc;
 }
 input[type="submit"] {
-  background-color: #30D5C8;
+  background-color: #2563EB;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -377,13 +392,7 @@ input[type="submit"] {
   cursor: pointer;
 }`
             }
-          }
-        ]
-      },
-      {
-        id: 'module-5-advanced-forms',
-        title: 'Module 5: Advanced Form Controls',
-        lessons: [
+          },
           {
             id: 'more-inputs',
             slug: 'more-inputs',
@@ -478,10 +487,9 @@ input[type="submit"] {
       }
     ]
   },
-  // Keep the other course for now, but it could be removed if desired.
   {
     id: 'introduction-to-css',
-    title: 'Introduction to CSS (Coming Soon)',
+    title: 'Introduction to CSS',
     description: 'Learn how to style your web pages and bring your designs to life with Cascading Style Sheets.',
     bannerImage: 'https://placehold.co/600x400.png',
     modules: []
@@ -501,13 +509,9 @@ export const getCourses = (): Course[] => {
     const storedCourses = localStorage.getItem('kalixa-courses');
     if (storedCourses) {
       courses = JSON.parse(storedCourses);
-      // Simple migration: if the old course is there, replace it with the new ones.
-      if (courses && courses.some(c => c.id === 'introduction-to-web-development')) {
-        courses = initialCourses;
-        saveCourses(courses);
-      }
     } else {
       courses = initialCourses;
+      saveCourses(courses);
     }
   } catch (e) {
     console.error('Failed to parse courses from localStorage', e);
