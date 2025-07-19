@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { getCourseById } from '@/lib/courses';
 import type { Course } from '@/lib/types';
@@ -23,9 +23,13 @@ export default function CertificatePage() {
   
   const certificateRef = useRef<HTMLDivElement>(null);
 
+  const checkCourseCompletion = useCallback(() => {
+    return course && isCourseCompleted();
+  }, [course, isCourseCompleted]);
+
   useEffect(() => {
     setIsClient(true);
-    if(course && isCourseCompleted()) {
+    if(checkCourseCompletion()) {
       const storedName = localStorage.getItem(`certificate-name-${courseId}`) || '';
       setName(storedName);
       
@@ -36,7 +40,7 @@ export default function CertificatePage() {
       }
       setCredentialId(storedId);
     }
-  }, [course, courseId, isCourseCompleted]);
+  }, [courseId, checkCourseCompletion]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
