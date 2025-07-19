@@ -49,8 +49,8 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonC
                       const isUnlocked = isLessonUnlocked(lesson.id);
                       const isCompleted = isLessonCompleted(lesson.id);
                       
-                      // A lesson is clickable if it's unlocked OR has been previously completed.
                       const isClickable = isUnlocked || isCompleted;
+                      const isActive = activeLesson.id === lesson.id;
 
                       return (
                         <li key={lesson.id}>
@@ -59,14 +59,14 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonC
                             disabled={!isClickable}
                             className={cn(
                               'flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors',
-                              activeLesson.id === lesson.id
-                                ? 'bg-accent text-accent-foreground'
+                              isActive
+                                ? 'bg-primary text-primary-foreground'
                                 : 'hover:bg-muted/50',
                               !isClickable && 'cursor-not-allowed opacity-50'
                             )}
                           >
                             {isCompleted ? (
-                              <CheckCircle className="h-4 w-4 text-primary" />
+                              <CheckCircle className={cn("h-4 w-4", !isActive && "text-primary")} />
                             ) : isUnlocked ? (
                               <Circle className="h-4 w-4" />
                             ) : (
