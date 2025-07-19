@@ -35,11 +35,11 @@ export function Quiz({ questions, onQuizSubmit, lessonId }: QuizProps) {
     onQuizSubmit(score, questions.length);
   };
   
-  const handleRetake = () => {
+  const handleRetake = useCallback(() => {
     setSubmitted(false);
     setAnswers({});
     onQuizSubmit(0, questions.length); // Reset parent state
-  }
+  }, [onQuizSubmit, questions.length]);
 
   return (
     <div className="space-y-8 not-prose">
