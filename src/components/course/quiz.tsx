@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { QuizQuestion } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -9,35 +9,46 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCourseProgress } from '@/hooks/useCourseProgress';
+import { getCourseById } from '@/lib/courses';
+import { useRouter } from 'next/navigation';
 
 interface QuizProps {
   questions: QuizQuestion[];
+  onQuizSubmit: (score: number, total: number) => void;
+  lessonId: string;
 }
 
-export function Quiz({ questions }: QuizProps) {
+export function Quiz({ questions, onQuizSubmit, lessonId }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
-
-  const handleAnswerChange = (questionId: string, value: string) => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
+  
+  // This is a bit of a hack to get the courseId
+  const courseId = useRouter; 
 
   const score = questions.reduce((acc, q) => {
     return answers[q.id] === q.correctAnswer ? acc + 1 : acc;
   }, 0);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    onQuizSubmit(score, questions.length);
+  };
+  
+  const handleRetake = () => {
+    setSubmitted(false);
+    setAnswers({});
+    onQuizSubmit(0, questions.length); // Reset parent state
+  }
+
   return (
     <div className="space-y-8 not-prose">
       {submitted && (
-        <Alert variant={score === questions.length ? "default" : "destructive"} className="bg-card">
+        <Alert variant={(score / questions.length) >= 0.7 ? "default" : "destructive"} className="bg-card">
           <AlertTitle>Quiz Results</AlertTitle>
           <AlertDescription>
-            You scored {score} out of {questions.length}. {score === questions.length ? "Great job!" : "Keep practicing!"}
+            You scored {score} out of {questions.length}. {(score / questions.length) >= 0.7 ? "Great job! You passed." : "You need to score at least 70% to pass. Please try again."}
           </AlertDescription>
         </Alert>
       )}
@@ -81,11 +92,16 @@ export function Quiz({ questions }: QuizProps) {
           </Button>
         )}
         {submitted && (
-          <Button onClick={() => { setSubmitted(false); setAnswers({}) }}>
+          <Button onClick={handleRetake}>
             Retake Quiz
           </Button>
         )}
       </form>
     </div>
   );
+
+  function handleAnswerChange(questionId: string, value: string) {
+    if (submitted) return;
+    setAnswers(prev => ({ ...prev, [questionId]: value }));
+  }
 }

@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { Terminal, MoveRight } from 'lucide-react';
+import { Terminal } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getCourses } from '@/lib/courses';
 import type { Course } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 
 function CourseCard({ course }: { course: Course }) {
   const lessonCount = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
@@ -13,12 +14,12 @@ function CourseCard({ course }: { course: Course }) {
     <Card className="flex flex-col">
       <CardHeader>
         <Image
-          src={`https://placehold.co/600x400.png`}
+          src={course.bannerImage || `https://placehold.co/600x400.png`}
           alt={course.title}
           width={600}
           height={400}
           className="rounded-lg object-cover"
-          data-ai-hint="online course abstract"
+          data-ai-hint={course.bannerImage ? undefined : "online course abstract"}
         />
       </CardHeader>
       <CardContent className="flex-1">
@@ -47,13 +48,14 @@ export default function Home() {
           <Terminal className="h-6 w-6 text-primary" />
           <span className="ml-2 font-headline text-lg font-bold">Kalixa</span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
           <Link href="#courses" className="text-sm font-medium hover:underline underline-offset-4">
             Courses
           </Link>
           <Link href="/dashboard" className="text-sm font-medium hover:underline underline-offset-4">
             Dashboard
           </Link>
+          <ThemeSwitcher />
         </nav>
       </header>
       <main className="flex-1">

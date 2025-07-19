@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Kalixa",
@@ -16,11 +17,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark", GeistSans.variable, GeistMono.variable)}>
+    <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={cn("font-body antialiased", "bg-background text-foreground")}>
-        {children}
-        <Toaster />
+      <body className={cn("font-body antialiased", GeistSans.variable, GeistMono.variable)}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

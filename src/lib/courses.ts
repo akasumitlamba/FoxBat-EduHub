@@ -5,6 +5,7 @@ export const initialCourses: Course[] = [
     id: 'introduction-to-web-development',
     title: 'Introduction to Web Development',
     description: 'Learn the fundamentals of web development, including HTML, CSS, and JavaScript.',
+    bannerImage: 'https://placehold.co/600x400/30D5C8/333333.png',
     modules: [
       {
         id: 'module-1-html',
@@ -69,6 +70,26 @@ export const initialCourses: Course[] = [
               js: `document.querySelector('.btn').addEventListener('click', () => {\n  alert('Button clicked!');\n});`
             },
           },
+          {
+            id: 'css-quiz',
+            slug: 'css-quiz',
+            title: 'CSS Knowledge Check',
+            type: 'quiz',
+            quiz: [
+              {
+                id: 'q-css-1',
+                question: 'What does CSS stand for?',
+                options: ['Creative Style Sheets', 'Cascading Style Sheets', 'Computer Style Sheets', 'Colorful Style Sheets'],
+                correctAnswer: 'Cascading Style Sheets',
+              },
+               {
+                id: 'q-css-2',
+                question: 'Which property is used to change the background color of an element?',
+                options: ['color', 'bgcolor', 'background-color', 'background'],
+                correctAnswer: 'background-color',
+              }
+            ]
+          }
         ],
       },
       {
@@ -118,12 +139,19 @@ export const getCourses = (): Course[] => {
   try {
     const savedCourses = localStorage.getItem('kalixa-courses');
     if (savedCourses) {
-      return JSON.parse(savedCourses);
+      const parsed = JSON.parse(savedCourses);
+      // Simple validation to ensure we have an array of courses
+      if(Array.isArray(parsed) && parsed.every(c => c.id && c.title)) {
+        return parsed;
+      }
     }
   } catch (error) {
     console.error("Failed to parse courses from localStorage", error);
+    // If parsing fails, fall back to initial courses
     return initialCourses;
   }
+  // If no saved courses, save the initial ones to local storage
+  saveCourses(initialCourses);
   return initialCourses;
 };
 

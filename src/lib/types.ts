@@ -29,5 +29,6 @@ export interface Course {
   id: string;
   title: string;
   description: string;
+  bannerImage?: string;
   modules: Module[];
 }

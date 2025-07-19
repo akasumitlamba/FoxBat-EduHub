@@ -4,24 +4,62 @@ import React, { useState, useMemo, useEffect } from 'react';
 import type { Course, Lesson } from '@/lib/types';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { Terminal } from 'lucide-react';
+import { Terminal, Award } from 'lucide-react';
 import { CourseSidebar } from '@/components/course/course-sidebar';
 import { LessonContent } from '@/components/course/lesson-content';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
+import { Button } from '@/components/ui/button';
 
 export function CoursePageClient({ course }: { course: Course }) {
   const allLessons = useMemo(() => course.modules.flatMap(m => m.lessons), [course]);
-  const [activeLesson, setActiveLesson] = useState<Lesson>(allLessons[0]);
-  const { progressPercentage, isInitialized } = useCourseProgress(course.id);
-  const [currentProgress, setCurrentProgress] = useState(0);
-  
-  const totalLessons = allLessons.length;
+  const { progress, isLessonCompleted, isModuleCompleted, setLessonCompleted, isCourseCompleted, isInitialized, getNextLesson, getPreviousLesson } = useCourseProgress(course);
+
+  const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
 
   useEffect(() => {
     if (isInitialized) {
-      setCurrentProgress(progressPercentage(totalLessons));
+      const firstIncompleteLesson = allLessons.find(l => !isLessonCompleted(l.id));
+      setActiveLesson(firstIncompleteLesson || allLessons[allLessons.length - 1]);
     }
-  }, [isInitialized, progressPercentage, totalLessons]);
+  }, [isInitialized, allLessons, isLessonCompleted]);
+
+  const handleSetActiveLesson = (lesson: Lesson) => {
+      const moduleIndex = course.modules.findIndex(m => m.lessons.some(l => l.id === lesson.id));
+      const isLocked = moduleIndex > 0 && !isModuleCompleted(course.modules[moduleIndex - 1].id);
+      
+      if (!isLocked) {
+          setActiveLesson(lesson);
+      }
+  };
+
+  const handleNext = () => {
+    if (!activeLesson) return;
+    setLessonCompleted(activeLesson.id, true);
+    const nextLesson = getNextLesson(activeLesson.id);
+    if (nextLesson) {
+      setActiveLesson(nextLesson);
+    }
+  };
+
+  const handlePrevious = () => {
+      if (!activeLesson) return;
+      const prevLesson = getPreviousLesson(activeLesson.id);
+      if (prevLesson) {
+          setActiveLesson(prevLesson);
+      }
+  };
+  
+  if (!activeLesson) {
+      return (
+          <div className="flex items-center justify-center min-h-screen">
+              Loading course...
+          </div>
+      );
+  }
+
+  const isCompleted = isLessonCompleted(activeLesson.id);
+  const nextLesson = getNextLesson(activeLesson.id);
+  const isLastLesson = !nextLesson;
 
   return (
     <SidebarProvider>
@@ -35,15 +73,36 @@ export function CoursePageClient({ course }: { course: Course }) {
             </Link>
           </div>
           <div className="ml-auto flex items-center gap-4">
-            <div className="text-sm text-muted-foreground">{Math.round(currentProgress)}% complete</div>
+             {isCourseCompleted() ? (
+              <Button asChild>
+                <Link href={`/courses/${course.id}/certificate`}>
+                  <Award className="mr-2 h-4 w-4" />
+                  View Certificate
+                </Link>
+              </Button>
+            ) : (
+             <div className="text-sm text-muted-foreground">{Math.round(progress.percentage)}% complete</div>
+            )}
           </div>
         </header>
         <div className="flex flex-1">
           <Sidebar collapsible="icon">
-            <CourseSidebar course={course} activeLesson={activeLesson} setActiveLesson={setActiveLesson} />
+            <CourseSidebar 
+              course={course} 
+              activeLesson={activeLesson} 
+              setActiveLesson={handleSetActiveLesson} 
+            />
           </Sidebar>
           <SidebarInset>
-            <LessonContent key={activeLesson.id} lesson={activeLesson} courseId={course.id} />
+            <LessonContent 
+              key={activeLesson.id} 
+              lesson={activeLesson} 
+              courseId={course.id} 
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              isCompleted={isCompleted}
+              isLastLesson={isLastLesson}
+            />
           </SidebarInset>
         </div>
       </div>
