@@ -4,33 +4,27 @@
 import type { Course, Lesson, Module } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Circle, Lock } from 'lucide-react';
+import { CheckCircle, Circle, Lock, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useCourseProgress } from '@/hooks/useCourseProgress';
 
 interface CourseSidebarProps {
   course: Course;
   activeLesson: Lesson;
   setActiveLesson: (lesson: Lesson) => void;
-  isLessonCompleted: (lessonId: string) => boolean;
-  isLessonUnlocked: (lessonId: string) => boolean;
-  progressPercentage: number;
+  isCourseCompleted: boolean;
 }
 
-const getIconForLessonType = (type: Lesson['type']) => {
-  switch (type) {
-    case 'theory': return <BookOpen className="h-4 w-4" />;
-    case 'code': return <Code className="h-4 w-4" />;
-    case 'quiz': return <HelpCircle className="h-4 w-4" />;
-    default: return <Circle className="h-4 w-4" />;
-  }
-}
-
-export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonCompleted, isLessonUnlocked, progressPercentage }: CourseSidebarProps) {
-
+export function CourseSidebar({ course, activeLesson, setActiveLesson, isCourseCompleted: courseCompleted }: CourseSidebarProps) {
+  const { isLessonCompleted, isLessonUnlocked, progress } = useCourseProgress(course.id);
+  const progressPercentage = progress.percentage;
+  
   return (
     <div className="flex h-full flex-col">
-      <div className="p-4">
+      <div className="p-4 border-b">
         <h2 className="text-lg font-semibold font-headline">{course.title}</h2>
         <Progress value={progressPercentage} className="mt-2 h-2" />
         <p className="text-xs text-muted-foreground mt-1">{Math.round(progressPercentage)}% complete</p>
@@ -82,6 +76,16 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isLessonC
           ))}
         </Accordion>
       </ScrollArea>
+       {courseCompleted && (
+        <div className="p-4 mt-auto border-t">
+          <Button asChild className="w-full">
+            <Link href={`/courses/${course.id}/certificate`}>
+              <Award className="mr-2 h-4 w-4" />
+              Get Your Certificate
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -76,7 +76,6 @@ export function CoursePageClient({ course }: { course: Course }) {
     );
   }
   
-  const nextLesson = getNextLesson();
   const courseCompleted = isCourseCompleted();
 
   return (
@@ -95,14 +94,12 @@ export function CoursePageClient({ course }: { course: Course }) {
           </div>
         </header>
         <div className="flex flex-1">
-          <Sidebar collapsible="icon">
+          <Sidebar>
             <CourseSidebar 
               course={course} 
               activeLesson={activeLesson} 
               setActiveLesson={handleSetActiveLesson}
-              isLessonCompleted={isLessonCompleted}
-              isLessonUnlocked={isLessonUnlocked}
-              progressPercentage={progress.percentage}
+              isCourseCompleted={courseCompleted}
             />
           </Sidebar>
           <SidebarInset>
@@ -113,7 +110,7 @@ export function CoursePageClient({ course }: { course: Course }) {
               onNext={handleNext}
               onPrevious={handlePrevious}
               hasPrevious={!!getPreviousLesson()}
-              hasNext={!!nextLesson}
+              hasNext={!!getNextLesson()}
               isCourseCompleted={courseCompleted}
             />
           </SidebarInset>

@@ -45,10 +45,12 @@ export const useCourseProgress = (courseId: string) => {
   const allLessons = useMemo(() => course?.modules.flatMap(m => m.lessons) || [], [course]);
 
   useEffect(() => {
-    const storedProgress = getProgressStore(courseId);
-    setProgressStore(storedProgress);
-    setIsInitialized(true);
-  }, [courseId]);
+    if (course) { // Ensure course is loaded before reading progress
+      const storedProgress = getProgressStore(courseId);
+      setProgressStore(storedProgress);
+      setIsInitialized(true);
+    }
+  }, [courseId, course]);
 
   const completedLessons = useMemo(() => progressStore.completedLessons || [], [progressStore]);
   const quizScores = useMemo(() => progressStore.quizScores || {}, [progressStore]);
@@ -92,22 +94,14 @@ export const useCourseProgress = (courseId: string) => {
   }, [completedLessons]);
   
   const isLessonUnlocked = useCallback((lessonId: string) => {
+    if (!isInitialized) return false;
     const lessonIndex = allLessons.findIndex(l => l.id === lessonId);
     if (lessonIndex === -1) return false;
     if (lessonIndex === 0) return true;
     
     const previousLesson = allLessons[lessonIndex - 1];
     return isLessonCompleted(previousLesson.id);
-  }, [allLessons, isLessonCompleted]);
-
-  const isCourseCompleted = useCallback(() => {
-    if (!isInitialized || allLessons.length === 0) return false;
-    return allLessons.every(l => completedLessons.includes(l.id));
-  }, [allLessons, completedLessons, isInitialized]);
-
-  const getCompletionDate = useCallback(() => {
-    return progressStore.completionDate || null;
-  }, [progressStore.completionDate]);
+  }, [allLessons, isLessonCompleted, isInitialized]);
 
   const progress = useMemo(() => {
     if (!isInitialized || allLessons.length === 0) {
@@ -116,8 +110,17 @@ export const useCourseProgress = (courseId: string) => {
     const total = allLessons.length;
     const count = completedLessons.length;
     const percentage = total > 0 ? (count / total) * 100 : 0;
-    return { count, total, percentage };
+    return { count, total, percentage: Math.min(percentage, 100) }; // Cap percentage at 100
   }, [isInitialized, allLessons.length, completedLessons.length]);
+
+  const isCourseCompleted = useCallback(() => {
+    if (!isInitialized) return false;
+    return progress.percentage >= 100;
+  }, [isInitialized, progress.percentage]);
+
+  const getCompletionDate = useCallback(() => {
+    return progressStore.completionDate || null;
+  }, [progressStore.completionDate]);
 
   return {
     isInitialized,
