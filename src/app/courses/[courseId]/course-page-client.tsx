@@ -11,8 +11,8 @@ import { LessonContent } from '@/components/course/lesson-content';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
 
 export function CoursePageClient({ course }: { course: Course }) {
-  const allLessons = useMemo(() => course.modules.flatMap(m => m.lessons), [course]);
   const { isLessonCompleted, setLessonCompleted, isInitialized, progress, isLessonUnlocked, isCourseCompleted } = useCourseProgress(course.id);
+  const allLessons = useMemo(() => course.modules.flatMap(m => m.lessons), [course]);
 
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
 
@@ -113,7 +113,6 @@ export function CoursePageClient({ course }: { course: Course }) {
               onPrevious={handlePrevious}
               hasPrevious={!!getPreviousLesson()}
               hasNext={!!nextLesson}
-              isNextUnlocked={nextLesson ? isLessonUnlocked(nextLesson.id) : true}
               isCourseCompleted={courseCompleted}
             />
           </SidebarInset>

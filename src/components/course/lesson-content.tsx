@@ -19,11 +19,10 @@ interface LessonContentProps {
   onPrevious: () => void;
   hasPrevious: boolean;
   hasNext: boolean;
-  isNextUnlocked: boolean;
   isCourseCompleted: boolean;
 }
 
-export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPrevious, hasNext, isNextUnlocked, isCourseCompleted }: LessonContentProps) {
+export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPrevious, hasNext, isCourseCompleted }: LessonContentProps) {
   const { isLessonCompleted, setLessonCompleted, setQuizScore } = useCourseProgress(courseId);
   const isCompleted = isLessonCompleted(lesson.id);
 
@@ -75,7 +74,7 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
            ) : (
             <Button onClick={onNext} disabled={!hasNext || !canProceed}>
               Next
-              {isNextUnlocked ? <ArrowRight className="ml-2 h-4 w-4" /> : <Lock className="ml-2 h-4 w-4" />}
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
            )}
         </CardFooter>
