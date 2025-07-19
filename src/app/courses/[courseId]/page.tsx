@@ -8,7 +8,7 @@ type CoursePageProps = {
   };
 };
 
-export default function CoursePage({ params }: CoursePageProps) {
+export default async function CoursePage({ params }: CoursePageProps) {
   const course = getCourseById(params.courseId);
 
   if (!course) {
