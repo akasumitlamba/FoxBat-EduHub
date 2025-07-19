@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { QuizQuestion } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -20,12 +20,12 @@ export function Quiz({ questions, onQuizSubmit }: QuizProps) {
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
-  const handleAnswerChange = (questionId: string, value: string) => {
+  const handleAnswerChange = useCallback((questionId: string, value: string) => {
     if (submitted) return;
     setAnswers(prev => ({ ...prev, [questionId]: value }));
-  };
+  }, [submitted]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (submitted) return;
 
@@ -36,14 +36,14 @@ export function Quiz({ questions, onQuizSubmit }: QuizProps) {
     setScore(currentScore);
     setSubmitted(true);
     onQuizSubmit(currentScore, questions.length);
-  };
+  }, [submitted, questions, answers, onQuizSubmit]);
   
-  const handleRetake = () => {
+  const handleRetake = useCallback(() => {
     setSubmitted(false);
     setAnswers({});
     setScore(0);
     onQuizSubmit(0, questions.length);
-  };
+  }, [onQuizSubmit, questions.length]);
 
   return (
     <div className="space-y-8 not-prose">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import type { Course, Lesson } from '@/lib/types';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import Link from 'next/link';
@@ -23,31 +23,31 @@ export function CoursePageClient({ course }: { course: Course }) {
     }
   }, [isInitialized, allLessons, isLessonCompleted]);
 
-  const handleSetActiveLesson = (lesson: Lesson) => {
+  const handleSetActiveLesson = useCallback((lesson: Lesson) => {
       const moduleIndex = course.modules.findIndex(m => m.lessons.some(l => l.id === lesson.id));
       const isLocked = moduleIndex > 0 && !isModuleCompleted(course.modules[moduleIndex - 1].id);
       
       if (!isLocked) {
           setActiveLesson(lesson);
       }
-  };
+  }, [course.modules, isModuleCompleted]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (!activeLesson) return;
     setLessonCompleted(activeLesson.id, true);
     const nextLesson = getNextLesson(activeLesson.id);
     if (nextLesson) {
       setActiveLesson(nextLesson);
     }
-  };
+  }, [activeLesson, setLessonCompleted, getNextLesson]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
       if (!activeLesson) return;
       const prevLesson = getPreviousLesson(activeLesson.id);
       if (prevLesson) {
           setActiveLesson(prevLesson);
       }
-  };
+  }, [activeLesson, getPreviousLesson]);
   
   if (!activeLesson) {
       return (
