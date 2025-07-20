@@ -12,6 +12,8 @@ import { Download } from 'lucide-react';
 import Image from 'next/image';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
 import { v4 as uuidv4 } from 'uuid';
+import { ThemeSwitcher } from '@/components/theme-switcher';
+import Link from 'next/link';
 
 export default function CertificatePage() {
   const params = useParams();
@@ -71,6 +73,12 @@ export default function CertificatePage() {
   return (
     <div className="min-h-screen bg-secondary p-4 sm:p-8 flex flex-col items-center">
       <div className="w-full max-w-4xl space-y-4 mb-8">
+        <div className="flex justify-between items-center">
+            <Button variant="link" asChild>
+                <Link href={`/courses/${courseId}`}>&larr; Back to Course</Link>
+            </Button>
+            <ThemeSwitcher />
+        </div>
         <h1 className="text-3xl font-bold font-headline text-center">Congratulations!</h1>
         <p className="text-muted-foreground text-center">You have successfully completed the course. Enter your name to generate your certificate.</p>
         <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">

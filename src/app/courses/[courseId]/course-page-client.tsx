@@ -10,6 +10,7 @@ import { CourseSidebar } from '@/components/course/course-sidebar';
 import { LessonContent } from '@/components/course/lesson-content';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
 import { Progress } from '@/components/ui/progress';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 
 export function CoursePageClient({ course }: { course: Course }) {
   const { isLessonCompleted, setLessonCompleted, isInitialized, progress, isLessonUnlocked, isCourseCompleted } = useCourseProgress(course.id);
@@ -98,11 +99,12 @@ export function CoursePageClient({ course }: { course: Course }) {
               <span className="font-headline text-lg font-bold">Foxbat EduHub</span>
             </Link>
           </div>
-           <div className="ml-auto flex items-center gap-4 w-1/4">
-             <div className="w-full flex items-center gap-2">
+           <div className="ml-auto flex items-center gap-4">
+             <div className="w-full flex items-center gap-2 md:w-64">
                 <Progress value={progress.percentage} className="h-2 w-full"/>
                 <span className="text-sm text-muted-foreground min-w-max">{Math.round(progress.percentage)}%</span>
              </div>
+             <ThemeSwitcher />
           </div>
         </header>
         <div className="flex flex-1">
