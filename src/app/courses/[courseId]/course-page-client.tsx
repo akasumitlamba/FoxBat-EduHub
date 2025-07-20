@@ -100,10 +100,6 @@ export function CoursePageClient({ course }: { course: Course }) {
             </Link>
           </div>
            <div className="ml-auto flex items-center gap-4">
-             <div className="w-full flex items-center gap-2 md:w-64">
-                <Progress value={progress.percentage} className="h-2 w-full"/>
-                <span className="text-sm text-muted-foreground min-w-max">{Math.round(progress.percentage)}%</span>
-             </div>
              <ThemeSwitcher />
           </div>
         </header>
