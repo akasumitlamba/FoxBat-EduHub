@@ -12,8 +12,8 @@ function CourseCard({ course }: { course: Course }) {
   const lessonCount = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-transform transform hover:-translate-y-1 hover:shadow-xl">
-       <CardHeader className="relative p-0 bg-secondary flex items-center justify-center h-48">
+    <Card className="flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-2xl hover:border-primary/50">
+       <CardHeader className="relative p-0 bg-secondary/50 flex items-center justify-center h-48 bg-gradient-to-br from-secondary via-background to-secondary">
         {course.bannerImage ? (
           <Image
             src={course.bannerImage}
@@ -78,7 +78,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="courses" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
+        <section id="courses" className="w-full py-12 md:py-16 lg:py-20 bg-secondary">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12 font-headline">Our Courses</h2>
             <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
