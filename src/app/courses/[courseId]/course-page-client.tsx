@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { CourseSidebar } from '@/components/course/course-sidebar';
 import { LessonContent } from '@/components/course/lesson-content';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
-import { Progress } from '@/components/ui/progress';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 
 export function CoursePageClient({ course }: { course: Course }) {
