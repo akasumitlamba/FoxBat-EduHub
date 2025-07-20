@@ -12,7 +12,7 @@ function CourseCard({ course }: { course: Course }) {
   const lessonCount = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-2xl hover:border-primary/50">
+    <Card className="flex flex-col overflow-hidden transition-all duration-300 ease-in-out shadow-lg hover:-translate-y-2 hover:shadow-2xl hover:border-primary/50 bg-gradient-to-br from-card to-secondary/20">
        <CardHeader className="relative p-0 bg-secondary/50 flex items-center justify-center h-48 bg-gradient-to-br from-secondary via-background to-secondary">
         {course.bannerImage ? (
           <Image
@@ -20,7 +20,7 @@ function CourseCard({ course }: { course: Course }) {
             alt={`${course.title} logo`}
             width={120}
             height={120}
-            className="w-32 h-32 object-contain"
+            className="w-32 h-32 object-contain [filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.1))]"
           />
         ) : (
           <div className="w-full h-full bg-muted" />
