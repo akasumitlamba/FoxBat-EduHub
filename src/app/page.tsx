@@ -12,7 +12,7 @@ function CourseCard({ course }: { course: Course }) {
   const lessonCount = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 ease-in-out shadow-lg hover:-translate-y-2 hover:shadow-2xl hover:border-primary/50 bg-gradient-to-br from-card to-secondary/20">
+    <Card className="flex flex-col overflow-hidden transition-all duration-300 ease-in-out shadow-lg hover:scale-105 hover:shadow-2xl hover:border-primary/50 bg-gradient-to-br from-card to-secondary/20">
        <CardHeader className="relative p-0 bg-secondary/50 flex items-center justify-center h-48 bg-gradient-to-br from-secondary via-background to-secondary">
         {course.bannerImage ? (
           <Image
@@ -71,7 +71,7 @@ export default function Home() {
                   Learn at the Speed of a Foxbat
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Just as the legendary MiG-25 'Foxbat' redefined speed, our courses are engineered to accelerate your learning. Master complex skills in record time and stay ahead of the curve.
+                  Just as the legendary MiG-25 'Foxbat' redefined aerial velocity, our courses are engineered to accelerate your learning. Master complex skills in record time and stay ahead of the curve.
                 </p>
               </div>
             </div>
