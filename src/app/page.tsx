@@ -6,30 +6,31 @@ import type { Course } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { CourseManager } from '@/components/course/course-manager';
+import { ArrowRight } from 'lucide-react';
 
 function CourseCard({ course }: { course: Course }) {
   const lessonCount = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
   return (
-    <Card className="flex flex-col">
-       <CardHeader className="relative">
+    <Card className="flex flex-col overflow-hidden transition-transform transform hover:-translate-y-1 hover:shadow-xl">
+       <CardHeader className="relative p-0">
         <Image
           src={course.bannerImage || `https://placehold.co/600x400.png`}
           alt={course.title}
           width={600}
           height={400}
-          className="rounded-lg object-cover"
+          className="w-full object-cover"
           data-ai-hint={course.id === 'html-fundamentals' ? 'html code abstract' : 'online course abstract'}
         />
         <div className="absolute top-4 right-4">
             <CourseManager course={course} />
         </div>
       </CardHeader>
-      <CardContent className="flex-1">
+      <CardContent className="flex-1 p-6">
         <CardTitle className="font-headline text-xl mb-2">{course.title}</CardTitle>
         <CardDescription>{course.description}</CardDescription>
       </CardContent>
-      <CardFooter className="flex justify-between items-center">
+      <CardFooter className="p-6 pt-0 flex justify-between items-center">
         <p className="text-sm text-muted-foreground">{course.modules.length} Modules • {lessonCount} Lessons</p>
         <Button asChild disabled={course.modules.length === 0}>
           <Link href={`/courses/${course.id}`}>
@@ -46,27 +47,35 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 h-14 flex items-center border-b">
+      <header className="px-4 lg:px-6 h-14 flex items-center border-b sticky top-0 bg-background/95 backdrop-blur-sm z-50">
         <Link href="/" className="flex items-center justify-center">
           <Image src="/logo.png" alt="Foxbat EduHub Logo" width={32} height={32} />
           <span className="ml-2 font-headline text-lg font-bold">Foxbat EduHub</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
+          <Button variant="ghost" asChild>
+            <Link href="#courses">Courses</Link>
+          </Button>
           <ThemeSwitcher />
         </nav>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-20 md:py-32 lg:py-40">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
+            <div className="flex flex-col items-center space-y-6 text-center">
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
                   Welcome to Foxbat EduHub
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Your journey to coding mastery starts here. Explore our interactive, AI-powered courses.
+                  Your journey to coding mastery starts here. Explore our interactive, AI-powered courses designed to take you from beginner to pro.
                 </p>
               </div>
+              <Button asChild size="lg">
+                <Link href="#courses">
+                  Explore Courses <ArrowRight className="ml-2"/>
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -84,6 +93,9 @@ export default function Home() {
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">&copy; 2024 Foxbat EduHub. All rights reserved.</p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+            <Link href="/dashboard" className="text-xs hover:underline underline-offset-4">Dashboard</Link>
+        </nav>
       </footer>
     </div>
   );

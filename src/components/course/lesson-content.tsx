@@ -43,7 +43,7 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
 
   return (
     <main className="flex-1 p-4 sm:p-6 md:p-8">
-      <Card className="min-h-full flex flex-col">
+      <Card className="min-h-full flex flex-col shadow-none border-0">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">{lesson.title}</CardTitle>
           <CardDescription>
@@ -57,7 +57,7 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
           {lesson.type === 'code' && lesson.code && <CodePlayground initialCode={lesson.code} />}
           {lesson.type === 'quiz' && lesson.quiz && <Quiz key={lesson.id} questions={lesson.quiz} onQuizSubmit={handleQuizSubmit} />}
         </CardContent>
-        <Separator className="my-4" />
+        <Separator className="my-6" />
         <CardFooter className="flex flex-col sm:flex-row items-center gap-4 justify-between">
           <Button variant="outline" onClick={onPrevious} disabled={!hasPrevious}>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -65,7 +65,7 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
           </Button>
 
           {isCourseCompleted && !hasNext ? (
-            <Button asChild>
+            <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
                 <Link href={`/courses/${courseId}/certificate`}>
                     <Award className="mr-2 h-4 w-4" />
                     Get Your Certificate

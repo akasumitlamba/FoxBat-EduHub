@@ -45,12 +45,12 @@ export const useCourseProgress = (courseId: string) => {
   const allLessons = useMemo(() => course?.modules.flatMap(m => m.lessons) || [], [course]);
 
   useEffect(() => {
-    if (course) { // Ensure course is loaded before reading progress
+    if (courseId) {
       const storedProgress = getProgressStore(courseId);
       setProgressStore(storedProgress);
       setIsInitialized(true);
     }
-  }, [courseId, course]);
+  }, [courseId]);
 
   const completedLessons = useMemo(() => progressStore.completedLessons || [], [progressStore]);
   const quizScores = useMemo(() => progressStore.quizScores || {}, [progressStore]);
@@ -63,8 +63,8 @@ export const useCourseProgress = (courseId: string) => {
       
       const newProgress = { ...prev, completedLessons: newCompletedLessons };
 
-      const allLessonsCompleted = allLessons.length > 0 && newCompletedLessons.length === allLessons.length;
-      if (allLessonsCompleted && !newProgress.completionDate) {
+      const totalLessons = allLessons.length;
+      if (totalLessons > 0 && newCompletedLessons.length === totalLessons && !newProgress.completionDate) {
         newProgress.completionDate = new Date().toISOString();
       }
 
@@ -86,6 +86,8 @@ export const useCourseProgress = (courseId: string) => {
     const newProgress = { completedLessons: [], quizScores: {} };
     setProgressStore(newProgress);
     saveProgressStore(courseId, newProgress);
+    localStorage.removeItem(`certificate-name-${courseId}`);
+    localStorage.removeItem(`certificate-id-${courseId}`);
     window.location.reload();
   }, [courseId]);
 
@@ -104,19 +106,17 @@ export const useCourseProgress = (courseId: string) => {
   }, [allLessons, isLessonCompleted, isInitialized]);
 
   const progress = useMemo(() => {
-    if (!isInitialized || allLessons.length === 0) {
+    const total = allLessons.length;
+    if (!isInitialized || total === 0) {
       return { count: 0, total: 0, percentage: 0 };
     }
-    const total = allLessons.length;
     const count = completedLessons.length;
-    const percentage = total > 0 ? (count / total) * 100 : 0;
+    const percentage = (count / total) * 100;
     return { count, total, percentage };
-  }, [isInitialized, allLessons, completedLessons.length]);
-
+  }, [isInitialized, allLessons.length, completedLessons.length]);
 
   const isCourseCompleted = useCallback(() => {
-    if (!isInitialized || !allLessons.length) return false;
-    return completedLessons.length === allLessons.length;
+    return isInitialized && allLessons.length > 0 && completedLessons.length === allLessons.length;
   }, [isInitialized, completedLessons.length, allLessons.length]);
 
 

@@ -10,57 +10,62 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
+import { useMemo } from 'react';
 
 interface CourseSidebarProps {
   course: Course;
   activeLesson: Lesson;
   setActiveLesson: (lesson: Lesson) => void;
-  isCourseCompleted: boolean;
 }
 
-export function CourseSidebar({ course, activeLesson, setActiveLesson, isCourseCompleted: courseCompleted }: CourseSidebarProps) {
-  const { isLessonCompleted, isLessonUnlocked, progress } = useCourseProgress(course.id);
-  const progressPercentage = progress.percentage;
-  
+export function CourseSidebar({ course, activeLesson, setActiveLesson }: CourseSidebarProps) {
+  const { isLessonCompleted, isLessonUnlocked, progress, isCourseCompleted } = useCourseProgress(course.id);
+
+  const defaultAccordionValues = useMemo(() => {
+    if (!activeLesson) return [];
+    const activeModule = course.modules.find(m => m.lessons.some(l => l.id === activeLesson.id));
+    return activeModule ? [activeModule.id] : [];
+  }, [activeLesson, course.modules]);
+
+  const courseCompleted = isCourseCompleted();
+
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col border-r">
       <div className="p-4 border-b">
         <h2 className="text-lg font-semibold font-headline">{course.title}</h2>
-        <Progress value={progressPercentage} className="mt-2 h-2" />
-        <p className="text-xs text-muted-foreground mt-1">{Math.round(progressPercentage)}% complete</p>
+        <Progress value={progress.percentage} className="mt-2 h-2" />
+        <p className="text-xs text-muted-foreground mt-1">{Math.round(progress.percentage)}% complete</p>
       </div>
       <ScrollArea className="flex-1">
-        <Accordion type="multiple" defaultValue={course.modules.map(m => m.id)} className="w-full px-4">
+        <Accordion type="multiple" defaultValue={defaultAccordionValues} className="w-full px-2">
           {course.modules.map((module: Module) => (
-              <AccordionItem value={module.id} key={module.id}>
-                <AccordionTrigger className="font-semibold text-left">
+              <AccordionItem value={module.id} key={module.id} className="border-b-0">
+                <AccordionTrigger className="font-semibold text-left hover:no-underline rounded-md px-2 hover:bg-muted">
                     {module.title}
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="space-y-1">
+                  <ul className="space-y-1 mt-1">
                     {module.lessons.map((lesson: Lesson) => {
-                      const isUnlocked = isLessonUnlocked(lesson.id);
-                      const isCompleted = isLessonCompleted(lesson.id);
-                      
-                      const isClickable = isUnlocked || isCompleted;
-                      const isActive = activeLesson.id === lesson.id;
+                      const unlocked = isLessonUnlocked(lesson.id);
+                      const completed = isLessonCompleted(lesson.id);
+                      const active = activeLesson.id === lesson.id;
 
                       return (
                         <li key={lesson.id}>
                           <button
-                            onClick={() => isClickable && setActiveLesson(lesson)}
-                            disabled={!isClickable}
+                            onClick={() => unlocked && setActiveLesson(lesson)}
+                            disabled={!unlocked}
                             className={cn(
                               'flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors',
-                              isActive
+                              active
                                 ? 'bg-primary text-primary-foreground hover:bg-primary'
-                                : 'hover:bg-muted/50',
-                              !isClickable && 'cursor-not-allowed opacity-50'
+                                : 'hover:bg-muted',
+                              !unlocked && 'cursor-not-allowed opacity-50'
                             )}
                           >
-                            {isCompleted ? (
-                              <CheckCircle className={cn("h-4 w-4 text-primary", isActive && "text-primary-foreground")} />
-                            ) : isUnlocked ? (
+                            {completed ? (
+                              <CheckCircle className={cn("h-4 w-4", active ? "text-primary-foreground" : "text-primary")} />
+                            ) : unlocked ? (
                               <Circle className="h-4 w-4" />
                             ) : (
                               <Lock className="h-4 w-4 text-muted-foreground" />
@@ -78,7 +83,7 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson, isCourseC
       </ScrollArea>
        {courseCompleted && (
         <div className="p-4 mt-auto border-t">
-          <Button asChild className="w-full">
+          <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
             <Link href={`/courses/${course.id}/certificate`}>
               <Award className="mr-2 h-4 w-4" />
               Get Your Certificate

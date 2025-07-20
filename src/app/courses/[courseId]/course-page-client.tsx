@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { CourseSidebar } from '@/components/course/course-sidebar';
 import { LessonContent } from '@/components/course/lesson-content';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
+import { Progress } from '@/components/ui/progress';
 
 export function CoursePageClient({ course }: { course: Course }) {
   const { isLessonCompleted, setLessonCompleted, isInitialized, progress, isLessonUnlocked, isCourseCompleted } = useCourseProgress(course.id);
@@ -20,9 +21,12 @@ export function CoursePageClient({ course }: { course: Course }) {
     if (isInitialized && allLessons.length > 0) {
       const firstIncompleteLesson = allLessons.find(l => !isLessonCompleted(l.id));
       const lastCompletedLesson = allLessons.slice().reverse().find(l => isLessonCompleted(l.id));
-      setActiveLesson(firstIncompleteLesson || lastCompletedLesson || allLessons[0]);
+      const targetLesson = firstIncompleteLesson || lastCompletedLesson || allLessons[0];
+      if (targetLesson) {
+        setActiveLesson(targetLesson);
+      }
     }
-  }, [isInitialized, allLessons, isLessonCompleted]);
+  }, [isInitialized, allLessons, isLessonCompleted, progress.count]);
 
   const handleSetLessonCompleted = useCallback((lessonId: string, completed: boolean) => {
     setLessonCompleted(lessonId, completed);
@@ -54,12 +58,14 @@ export function CoursePageClient({ course }: { course: Course }) {
 
   const handleNext = useCallback(() => {
     if (!activeLesson) return;
-    handleSetLessonCompleted(activeLesson.id, true);
+    if (!isLessonCompleted(activeLesson.id)) {
+        handleSetLessonCompleted(activeLesson.id, true);
+    }
     const nextLesson = getNextLesson();
     if (nextLesson) {
       setActiveLesson(nextLesson);
     }
-  }, [activeLesson, getNextLesson, handleSetLessonCompleted]);
+  }, [activeLesson, getNextLesson, handleSetLessonCompleted, isLessonCompleted]);
 
   const handlePrevious = useCallback(() => {
     const previousLesson = getPreviousLesson();
@@ -71,7 +77,10 @@ export function CoursePageClient({ course }: { course: Course }) {
   if (!isInitialized || !activeLesson) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        Loading course...
+        <div className="text-center">
+            <p className="text-lg">Loading course...</p>
+            <p className="text-sm text-muted-foreground">Please wait a moment.</p>
+        </div>
       </div>
     );
   }
@@ -89,8 +98,11 @@ export function CoursePageClient({ course }: { course: Course }) {
               <span className="font-headline text-lg font-bold">Foxbat EduHub</span>
             </Link>
           </div>
-           <div className="ml-auto flex items-center gap-4">
-             <div className="text-sm text-muted-foreground">{Math.round(progress.percentage)}% complete</div>
+           <div className="ml-auto flex items-center gap-4 w-1/4">
+             <div className="w-full flex items-center gap-2">
+                <Progress value={progress.percentage} className="h-2 w-full"/>
+                <span className="text-sm text-muted-foreground min-w-max">{Math.round(progress.percentage)}%</span>
+             </div>
           </div>
         </header>
         <div className="flex flex-1">
@@ -99,7 +111,6 @@ export function CoursePageClient({ course }: { course: Course }) {
               course={course} 
               activeLesson={activeLesson} 
               setActiveLesson={handleSetActiveLesson}
-              isCourseCompleted={courseCompleted}
             />
           </Sidebar>
           <SidebarInset>

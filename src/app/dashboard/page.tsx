@@ -1,13 +1,29 @@
 import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AICourseGenerator } from '@/components/dashboard/ai-course-generator';
 
 export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center text-center">
-      <h1 className="text-3xl font-bold font-headline">Dashboard Under Construction</h1>
-      <p className="text-muted-foreground mt-2">This feature is temporarily unavailable. We're working on it!</p>
-      <Link href="/" className="mt-4 text-primary hover:underline">
-        Go back to Home
-      </Link>
+    <div className="flex min-h-screen flex-col">
+       <header className="px-4 lg:px-6 h-14 flex items-center border-b">
+        <Link href="/" className="flex items-center justify-center">
+          <span className="ml-2 font-headline text-lg font-bold">Dashboard</span>
+        </Link>
+      </header>
+       <main className="flex-1 p-4 sm:p-6 md:p-8">
+        <div className="max-w-4xl mx-auto space-y-8">
+            <AICourseGenerator />
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline">My Courses</CardTitle>
+                    <CardDescription>An overview of your enrolled and created courses.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground">Course listing coming soon...</p>
+                </CardContent>
+            </Card>
+        </div>
+      </main>
     </div>
   );
 }
