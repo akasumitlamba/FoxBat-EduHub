@@ -5,7 +5,7 @@ export const initialCourses: Course[] = [
     id: 'html-fundamentals',
     title: 'HTML Fundamentals',
     description: 'Learn the foundational language of the web. This course covers everything from basic tags to complex forms.',
-    bannerImage: 'https://placehold.co/600x400.png',
+    bannerImage: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
     modules: [
       {
         id: 'module-1-basics',
@@ -491,7 +491,7 @@ input[type="submit"] {
     id: 'introduction-to-css',
     title: 'Introduction to CSS',
     description: 'Learn how to style your web pages and bring your designs to life with Cascading Style Sheets.',
-    bannerImage: 'https://placehold.co/600x400.png',
+    bannerImage: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
     modules: []
   }
 ];

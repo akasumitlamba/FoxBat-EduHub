@@ -13,15 +13,18 @@ function CourseCard({ course }: { course: Course }) {
 
   return (
     <Card className="flex flex-col overflow-hidden transition-transform transform hover:-translate-y-1 hover:shadow-xl">
-       <CardHeader className="relative p-0">
-        <Image
-          src={course.bannerImage || `https://placehold.co/600x400.png`}
-          alt={course.title}
-          width={600}
-          height={400}
-          className="w-full object-cover"
-          data-ai-hint={course.id === 'html-fundamentals' ? 'html code abstract' : 'online course abstract'}
-        />
+       <CardHeader className="relative p-0 bg-secondary flex items-center justify-center h-48">
+        {course.bannerImage ? (
+          <Image
+            src={course.bannerImage}
+            alt={`${course.title} logo`}
+            width={120}
+            height={120}
+            className="w-32 h-32 object-contain"
+          />
+        ) : (
+          <div className="w-full h-full bg-muted" />
+        )}
         <div className="absolute top-4 right-4">
             <CourseManager course={course} />
         </div>
@@ -71,11 +74,6 @@ export default function Home() {
                   Your journey to coding mastery starts here. Explore our interactive, AI-powered courses designed to take you from beginner to pro.
                 </p>
               </div>
-              <Button asChild size="lg">
-                <Link href="#courses">
-                  Explore Courses <ArrowRight className="ml-2"/>
-                </Link>
-              </Button>
             </div>
           </div>
         </section>
@@ -92,10 +90,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-muted-foreground">&copy; 2024 Foxbat EduHub. All rights reserved.</p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-            <Link href="/dashboard" className="text-xs hover:underline underline-offset-4">Dashboard</Link>
-        </nav>
+        <p className="text-xs text-muted-foreground">&copy; 2025 Foxbat EduHub. All rights reserved.</p>
       </footer>
     </div>
   );
