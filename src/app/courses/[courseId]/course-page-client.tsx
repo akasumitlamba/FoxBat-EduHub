@@ -104,7 +104,8 @@ export function CoursePageClient({ course }: { course: Course }) {
         </header>
         <div className="flex flex-1">
           <Sidebar>
-            <CourseSidebar 
+            <CourseSidebar
+              key={progress.count}
               course={course} 
               activeLesson={activeLesson} 
               setActiveLesson={handleSetActiveLesson}
