@@ -5,7 +5,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import type { Course, Lesson } from '@/lib/types';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { Terminal } from 'lucide-react';
+import Image from 'next/image';
 import { CourseSidebar } from '@/components/course/course-sidebar';
 import { LessonContent } from '@/components/course/lesson-content';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
@@ -85,8 +85,8 @@ export function CoursePageClient({ course }: { course: Course }) {
           <div className="flex items-center gap-2">
             <SidebarTrigger className="md:hidden" />
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Terminal className="h-6 w-6 text-primary" />
-              <span className="font-headline text-lg font-bold">Kalixa</span>
+              <Image src="/logo.png" alt="Foxbat EduHub Logo" width={32} height={32} />
+              <span className="font-headline text-lg font-bold">Foxbat EduHub</span>
             </Link>
           </div>
            <div className="ml-auto flex items-center gap-4">

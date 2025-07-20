@@ -506,7 +506,7 @@ export const getCourses = (): Course[] => {
     return courses;
   }
   try {
-    const storedCourses = localStorage.getItem('kalixa-courses');
+    const storedCourses = localStorage.getItem('foxbat-eduhub-courses');
     if (storedCourses) {
       courses = JSON.parse(storedCourses);
     } else {
@@ -523,7 +523,7 @@ export const getCourses = (): Course[] => {
 export const saveCourses = (newCourses: Course[]) => {
   courses = newCourses;
   if (typeof window !== 'undefined') {
-    localStorage.setItem('kalixa-courses', JSON.stringify(courses));
+    localStorage.setItem('foxbat-eduhub-courses', JSON.stringify(courses));
   }
 };
 

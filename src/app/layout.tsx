@@ -7,7 +7,7 @@ import { GeistMono } from 'geist/font/mono';
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  title: "Kalixa",
+  title: "Foxbat EduHub",
   description: "Learn to code, interactively.",
 };
 

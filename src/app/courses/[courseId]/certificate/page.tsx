@@ -8,7 +8,8 @@ import type { Course } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Download, Terminal } from 'lucide-react';
+import { Download } from 'lucide-react';
+import Image from 'next/image';
 import { useCourseProgress } from '@/hooks/useCourseProgress';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -57,7 +58,7 @@ export default function CertificatePage() {
     const canvas = await html2canvas(certificateRef.current, { scale: 2 });
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
-    link.download = `Kalixa_Certificate_${course?.title.replace(/\s+/g, '_')}.png`;
+    link.download = `Foxbat_EduHub_Certificate_${course?.title.replace(/\s+/g, '_')}.png`;
     link.click();
   };
 
@@ -86,17 +87,21 @@ export default function CertificatePage() {
       
       <div 
         ref={certificateRef} 
-        className="w-full max-w-4xl aspect-[1.414_1] bg-background text-foreground p-8 sm:p-12 border-4 border-primary shadow-2xl flex flex-col justify-between"
+        className="w-full max-w-4xl aspect-[1.414_1] bg-background text-foreground p-8 sm:p-12 border-4 border-primary shadow-2xl flex flex-col justify-between relative overflow-hidden"
       >
-        <div className="text-center">
+        <div className="absolute inset-0 flex items-center justify-center opacity-5">
+           <Image src="/logo.png" alt="Foxbat EduHub Logo" width={500} height={500} className="transform rotate-[-30deg]"/>
+        </div>
+
+        <div className="text-center z-10">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Terminal className="h-10 w-10 text-primary" />
-            <span className="font-headline text-4xl font-bold">Kalixa</span>
+            <Image src="/logo.png" alt="Foxbat EduHub Logo" width={40} height={40}/>
+            <span className="font-headline text-4xl font-bold">Foxbat EduHub</span>
           </div>
           <p className="text-lg text-muted-foreground">Certificate of Completion</p>
         </div>
 
-        <div className="text-center my-8">
+        <div className="text-center my-8 z-10">
           <p className="text-xl mb-2">This certifies that</p>
           <h2 className="text-4xl sm:text-5xl font-bold font-headline text-primary break-words">
             {name || 'Your Name Here'}
@@ -105,7 +110,7 @@ export default function CertificatePage() {
           <h3 className="text-2xl sm:text-3xl font-semibold mt-2">{course.title}</h3>
         </div>
 
-        <div className="flex justify-between items-end text-xs text-muted-foreground mt-auto">
+        <div className="flex justify-between items-end text-xs text-muted-foreground mt-auto z-10">
            <div>
              <p>Date of Completion: {completionDate || 'Calculating...'}</p>
            </div>

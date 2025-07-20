@@ -19,7 +19,7 @@ const getProgressStore = (courseId: string): CourseProgress => {
     return { completedLessons: [], quizScores: {} };
   }
   try {
-    const progress = localStorage.getItem(`kalixa-progress-${courseId}`);
+    const progress = localStorage.getItem(`foxbat-eduhub-progress-${courseId}`);
     return progress ? JSON.parse(progress) : { completedLessons: [], quizScores: {} };
   } catch (error) {
     console.error("Failed to parse progress from localStorage", error);
@@ -30,7 +30,7 @@ const getProgressStore = (courseId: string): CourseProgress => {
 const saveProgressStore = (courseId: string, progress: CourseProgress) => {
   if (typeof window !== 'undefined') {
     try {
-      localStorage.setItem(`kalixa-progress-${courseId}`, JSON.stringify(progress));
+      localStorage.setItem(`foxbat-eduhub-progress-${courseId}`, JSON.stringify(progress));
     } catch (error) {
       console.error("Failed to save progress to localStorage", error);
     }
@@ -110,13 +110,15 @@ export const useCourseProgress = (courseId: string) => {
     const total = allLessons.length;
     const count = completedLessons.length;
     const percentage = total > 0 ? (count / total) * 100 : 0;
-    return { count, total, percentage: Math.min(percentage, 100) }; // Cap percentage at 100
-  }, [isInitialized, allLessons.length, completedLessons.length]);
+    return { count, total, percentage };
+  }, [isInitialized, allLessons, completedLessons.length]);
+
 
   const isCourseCompleted = useCallback(() => {
-    if (!isInitialized) return false;
-    return progress.percentage >= 100;
-  }, [isInitialized, progress.percentage]);
+    if (!isInitialized || !allLessons.length) return false;
+    return completedLessons.length === allLessons.length;
+  }, [isInitialized, completedLessons.length, allLessons.length]);
+
 
   const getCompletionDate = useCallback(() => {
     return progressStore.completionDate || null;

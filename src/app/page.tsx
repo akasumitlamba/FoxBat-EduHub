@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Terminal } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getCourses } from '@/lib/courses';
@@ -49,8 +48,8 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center border-b">
         <Link href="/" className="flex items-center justify-center">
-          <Terminal className="h-6 w-6 text-primary" />
-          <span className="ml-2 font-headline text-lg font-bold">Kalixa</span>
+          <Image src="/logo.png" alt="Foxbat EduHub Logo" width={32} height={32} />
+          <span className="ml-2 font-headline text-lg font-bold">Foxbat EduHub</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
           <ThemeSwitcher />
@@ -62,7 +61,7 @@ export default function Home() {
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
-                  Welcome to Kalixa
+                  Welcome to Foxbat EduHub
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                   Your journey to coding mastery starts here. Explore our interactive, AI-powered courses.
@@ -84,7 +83,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-muted-foreground">&copy; 2024 Kalixa. All rights reserved.</p>
+        <p className="text-xs text-muted-foreground">&copy; 2024 Foxbat EduHub. All rights reserved.</p>
       </footer>
     </div>
   );

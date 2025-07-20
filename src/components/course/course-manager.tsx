@@ -33,7 +33,7 @@ export function CourseManager({ course }: { course: Course }) {
   const handleShare = async () => {
     const shareData = {
       title: course.title,
-      text: `Check out this course on Kalixa: ${course.title}`,
+      text: `Check out this course on Foxbat EduHub: ${course.title}`,
       url: `${window.location.origin}/courses/${course.id}`,
     };
     try {
