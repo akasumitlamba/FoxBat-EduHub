@@ -58,14 +58,12 @@ export function CoursePageClient({ course }: { course: Course }) {
 
   const handleNext = useCallback(() => {
     if (!activeLesson) return;
-    if (!isLessonCompleted(activeLesson.id)) {
-        handleSetLessonCompleted(activeLesson.id, true);
-    }
+    // The lesson is now marked as complete within LessonContent before calling onNext
     const nextLesson = getNextLesson();
     if (nextLesson) {
       setActiveLesson(nextLesson);
     }
-  }, [activeLesson, getNextLesson, handleSetLessonCompleted, isLessonCompleted]);
+  }, [activeLesson, getNextLesson]);
 
   const handlePrevious = useCallback(() => {
     const previousLesson = getPreviousLesson();

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { Lesson } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,22 +24,34 @@ interface LessonContentProps {
 
 export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPrevious, hasNext, isCourseCompleted }: LessonContentProps) {
   const { isLessonCompleted, setLessonCompleted, setQuizScore } = useCourseProgress(courseId);
-  const isCompleted = isLessonCompleted(lesson.id);
-
-  const [quizPassed, setQuizPassed] = useState(isCompleted);
+  const [isCompleted, setIsCompleted] = useState(isLessonCompleted(lesson.id));
+  
+  // This effect ensures local state is updated if progress changes elsewhere
+  useEffect(() => {
+    setIsCompleted(isLessonCompleted(lesson.id));
+  }, [lesson.id, isLessonCompleted]);
 
   const handleQuizSubmit = useCallback((score: number, total: number) => {
     setQuizScore(lesson.id, { score, total });
     const passed = (score / total) >= 0.7;
     if (passed) {
-      setQuizPassed(true);
       setLessonCompleted(lesson.id, true);
+      setIsCompleted(true); // Eagerly update local state
     } else {
-      setQuizPassed(false);
+      setIsCompleted(false);
     }
   }, [lesson.id, setLessonCompleted, setQuizScore]);
+
+  // Mark theory/code lessons as complete when moving away from them
+  const handleProceed = () => {
+    if (lesson.type !== 'quiz' && !isCompleted) {
+      setLessonCompleted(lesson.id, true);
+      setIsCompleted(true);
+    }
+    onNext();
+  };
   
-  const canProceed = lesson.type !== 'quiz' || quizPassed;
+  const canProceed = lesson.type !== 'quiz' || isCompleted;
 
   return (
     <main className="flex-1 p-4 sm:p-6 md:p-8">
@@ -53,7 +65,7 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 prose dark:prose-invert max-w-none">
-          {lesson.type === 'theory' && lesson.content && <div dangerouslySetInnerHTML={{ __html: lesson.content }} />}
+          {lesson.content && (lesson.type === 'theory' || lesson.type === 'code') && <div dangerouslySetInnerHTML={{ __html: lesson.content }} />}
           {lesson.type === 'code' && lesson.code && <CodePlayground initialCode={lesson.code} />}
           {lesson.type === 'quiz' && lesson.quiz && <Quiz key={lesson.id} questions={lesson.quiz} onQuizSubmit={handleQuizSubmit} />}
         </CardContent>
@@ -72,7 +84,7 @@ export function LessonContent({ courseId, lesson, onNext, onPrevious, hasPreviou
                 </Link>
             </Button>
            ) : (
-            <Button onClick={onNext} disabled={!hasNext || !canProceed}>
+            <Button onClick={handleProceed} disabled={!hasNext || !canProceed}>
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
