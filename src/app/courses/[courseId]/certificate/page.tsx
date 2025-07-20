@@ -114,8 +114,8 @@ export default function CertificatePage() {
            <div>
              <p>Date of Completion: {completionDate || 'Calculating...'}</p>
            </div>
-           <div>
-            <p>Credential ID: {credentialId}</p>
+           <div className="border border-muted-foreground/50 rounded-md p-2 text-center">
+            <p className="font-mono text-xs">Credential ID: {credentialId}</p>
            </div>
         </div>
       </div>
