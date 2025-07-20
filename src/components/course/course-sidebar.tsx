@@ -32,7 +32,7 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson }: CourseS
   return (
     <div className="flex h-full flex-col border-r">
        <div className="p-4 border-b">
-         <Button variant="link" asChild className="p-0 h-auto mb-4 text-sm text-muted-foreground">
+         <Button variant="link" asChild className="p-0 h-auto mb-4 text-sm">
             <Link href="/">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Homepage
