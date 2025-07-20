@@ -4,7 +4,7 @@
 import type { Course, Lesson, Module } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Circle, Lock, Award } from 'lucide-react';
+import { CheckCircle, Circle, Lock, Award, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -31,7 +31,13 @@ export function CourseSidebar({ course, activeLesson, setActiveLesson }: CourseS
 
   return (
     <div className="flex h-full flex-col border-r">
-      <div className="p-4 border-b">
+       <div className="p-4 border-b">
+         <Button variant="link" asChild className="p-0 h-auto mb-4 text-sm text-muted-foreground">
+            <Link href="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Homepage
+            </Link>
+         </Button>
         <h2 className="text-lg font-semibold font-headline">{course.title}</h2>
         <Progress value={progress.percentage} className="mt-2 h-2" />
         <p className="text-xs text-muted-foreground mt-1">{Math.round(progress.percentage)}% complete</p>
