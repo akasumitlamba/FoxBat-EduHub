@@ -87,8 +87,24 @@ export default function CertificatePage() {
       
       <div 
         ref={certificateRef} 
-        className="w-full max-w-4xl aspect-[1.414_1] bg-background text-foreground p-8 sm:p-12 border-4 border-primary shadow-2xl flex flex-col justify-between relative overflow-hidden"
+        className="w-full max-w-4xl aspect-[1.414_1] bg-background text-foreground shadow-2xl flex flex-col justify-between relative overflow-hidden p-8 sm:p-12"
       >
+        <div className="absolute inset-0 w-full h-full text-primary">
+            <svg width="100%" height="100%" viewBox="0 0 842 595" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="10" width="822" height="575" fill="none" stroke="currentColor" strokeWidth="2"/>
+                <g transform="translate(10, 10)">
+                    <path d="M0,0 L100,0 L100,2 L2,2 L2,100 L0,100 Z" fill="currentColor"/>
+                    <path d="M0,575 L0,475 L2,475 L2,573 L100,573 L100,575 Z" fill="currentColor"/>
+                </g>
+                 <g transform="translate(832, 10) scale(-1, 1)">
+                    <path d="M0,0 L100,0 L100,2 L2,2 L2,100 L0,100 Z" fill="currentColor"/>
+                </g>
+                 <g transform="translate(832, 585) scale(-1, -1)">
+                    <path d="M0,0 L100,0 L100,2 L2,2 L2,100 L0,100 Z" fill="currentColor"/>
+                </g>
+            </svg>
+        </div>
+        
         <div className="absolute inset-0 flex items-center justify-center opacity-5">
            <Image src="/logo.png" alt="Foxbat EduHub Logo" width={500} height={500} className="transform rotate-[-30deg]"/>
         </div>
