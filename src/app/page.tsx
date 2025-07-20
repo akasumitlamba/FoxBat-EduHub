@@ -63,15 +63,15 @@ export default function Home() {
         </nav>
       </header>
       <main className="flex-1">
-        <section className="w-full py-20 md:py-32 lg:py-40">
+        <section className="w-full py-16 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-6 text-center">
               <div className="space-y-4">
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-                  Welcome to Foxbat EduHub
+                  Learn at the Speed of a Foxbat
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Your journey to coding mastery starts here. Explore our interactive, AI-powered courses designed to take you from beginner to pro.
+                  Just as the legendary MiG-25 'Foxbat' redefined speed, our courses are engineered to accelerate your learning. Master complex skills in record time and stay ahead of the curve.
                 </p>
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center justify-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">&copy; 2025 Foxbat EduHub. All rights reserved.</p>
       </footer>
     </div>
