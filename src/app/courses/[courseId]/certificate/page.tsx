@@ -89,26 +89,31 @@ export default function CertificatePage() {
         ref={certificateRef} 
         className="w-full max-w-4xl aspect-[1.414_1] bg-background text-foreground shadow-2xl flex flex-col justify-between relative overflow-hidden p-8 sm:p-12"
       >
-        <div className="absolute inset-0 w-full h-full text-primary/80">
-            <svg width="100%" height="100%" viewBox="0 0 842 595" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="10" width="822" height="575" fill="none" stroke="currentColor" strokeWidth="2"/>
-                <g transform="translate(15, 15)">
-                    <path d="M0,0 L80,0 L80,2 L2,2 L2,80 L0,80 Z" fill="currentColor"/>
-                    <path d="M70,10 C 65,10 65,15 70,15 L 85,15 C 90,15 90,10 85,10 Z M 10,70 C 10,65 15,65 15,70 L 15,85 C 15,90 10,90 10,85 Z" fill="currentColor" />
-                </g>
-                 <g transform="translate(827, 15) scale(-1, 1)">
-                    <path d="M0,0 L80,0 L80,2 L2,2 L2,80 L0,80 Z" fill="currentColor"/>
-                    <path d="M70,10 C 65,10 65,15 70,15 L 85,15 C 90,15 90,10 85,10 Z M 10,70 C 10,65 15,65 15,70 L 15,85 C 15,90 10,90 10,85 Z" fill="currentColor" />
-                </g>
-                 <g transform="translate(15, 580) scale(1, -1)">
-                    <path d="M0,0 L80,0 L80,2 L2,2 L2,80 L0,80 Z" fill="currentColor"/>
-                     <path d="M70,10 C 65,10 65,15 70,15 L 85,15 C 90,15 90,10 85,10 Z M 10,70 C 10,65 15,65 15,70 L 15,85 C 15,90 10,90 10,85 Z" fill="currentColor" />
-                </g>
-                <g transform="translate(827, 580) scale(-1, -1)">
-                    <path d="M0,0 L80,0 L80,2 L2,2 L2,80 L0,80 Z" fill="currentColor"/>
-                     <path d="M70,10 C 65,10 65,15 70,15 L 85,15 C 90,15 90,10 85,10 Z M 10,70 C 10,65 15,65 15,70 L 15,85 C 15,90 10,90 10,85 Z" fill="currentColor" />
-                </g>
-            </svg>
+        <div className="absolute inset-0 w-full h-full text-primary/50" style={{'--color-1': 'hsl(var(--primary))', '--color-2': 'hsl(var(--accent))'} as React.CSSProperties}>
+          <svg width="100%" height="100%" viewBox="0 0 842 595" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="838" height="591" fill="none" stroke="currentColor" strokeWidth="2" rx="10"/>
+            
+            <g id="corner-top-left" transform="translate(10, 10)">
+              <path d="M0 50 A 50 50 0 0 1 50 0 L 0 0 Z" fill="var(--color-1)" opacity="0.1"/>
+              <path d="M0 30 A 30 30 0 0 1 30 0 L 0 0 Z" fill="var(--color-2)" opacity="0.1"/>
+            </g>
+            <g id="corner-top-right" transform="translate(832, 10) scale(-1, 1)">
+              <path d="M0 50 A 50 50 0 0 1 50 0 L 0 0 Z" fill="var(--color-1)" opacity="0.1"/>
+              <path d="M0 30 A 30 30 0 0 1 30 0 L 0 0 Z" fill="var(--color-2)" opacity="0.1"/>
+            </g>
+            <g id="corner-bottom-left" transform="translate(10, 585) scale(1, -1)">
+              <path d="M0 50 A 50 50 0 0 1 50 0 L 0 0 Z" fill="var(--color-1)" opacity="0.1"/>
+              <path d="M0 30 A 30 30 0 0 1 30 0 L 0 0 Z" fill="var(--color-2)" opacity="0.1"/>
+            </g>
+            <g id="corner-bottom-right" transform="translate(832, 585) scale(-1, -1)">
+              <path d="M0 50 A 50 50 0 0 1 50 0 L 0 0 Z" fill="var(--color-1)" opacity="0.1"/>
+              <path d="M0 30 A 30 30 0 0 1 30 0 L 0 0 Z" fill="var(--color-2)" opacity="0.1"/>
+            </g>
+
+            <path d="M40,5 C100,20 200,0 300,10 S 450,20 550,5 S 700,-10 750,15 S 800,20 840,10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
+            <path d="M40,590 C100,575 200,595 300,585 S 450,575 550,590 S 700,605 750,580 S 800,575 840,585" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
+
+          </svg>
         </div>
         
         <div className="absolute inset-0 flex items-center justify-center opacity-5">
