@@ -1,6 +1,9 @@
 # FoxBat-EduHub Learning Platform 🚀
 
-[![Hits](https://hits.seeyouleaf.com/count/bg=red&fg=white&title=Visitors&url=https%3A%2F%2Fgithub.com%2FYourGitHubUsername%2FFoxBat-EduHub-Learning-Platform)](https://hits.seeyouleaf.com)
+<p align="center">
+  <img src="public/logo.png" alt="FoxBat-EduHub Logo" width="200">
+</p>
+
 
 ---
 
