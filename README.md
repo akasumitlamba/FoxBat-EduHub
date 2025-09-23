@@ -5,7 +5,7 @@
 </p>
 
 
----
+
 
 ## Welcome to the Future of Learning! 🎓
 
