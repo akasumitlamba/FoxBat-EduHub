@@ -6,7 +6,6 @@
 
 
 
-
 ## Welcome to the Future of Learning! 🎓
 
 Dive into the **FoxBat-EduHub Learning Platform**, an innovative online educational hub designed to make learning interactive, accessible, and rewarding. Inspired by the best of online learning experiences, we're building a space where knowledge meets practice, and skills are truly earned.
