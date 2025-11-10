@@ -1,4 +1,4 @@
-# FoxBat-EduHub Learning Platform 🚀
+# FoxBat-EduHub Learning Platform 
 
 <p align="center">
   <img src="public/logo.png" alt="FoxBat-EduHub Logo" width="200">
